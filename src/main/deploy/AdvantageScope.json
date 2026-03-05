@@ -1,0 +1,732 @@
+{
+  "hubs": [
+    {
+      "x": -8,
+      "y": -8,
+      "width": 1722,
+      "height": 1034,
+      "state": {
+        "sidebar": {
+          "width": 300,
+          "expanded": [
+            "/Robot/Swerve/Actual Module States/0",
+            "/Robot/Shooter/Shooter Motor",
+            "/Robot/Vision/FRONT/Tag Poses/0",
+            "/Robot/Vision/FRONT/Tag Poses/1",
+            "/Robot/Vision/FRONT/Tag Poses/2",
+            "/Robot/Vision/FRONT/Tag Poses/3",
+            "/Robot/Post",
+            "/Robot/Intake/Intake Motor",
+            "/Robot/Shooter/Flywheel A Motor",
+            "/Robot/Intake/Mode",
+            "/Robot/Pose/Gyro",
+            "/Robot/DEBUG/Target pose",
+            "/Robot/DEBUG/Target pose/translation",
+            "/Robot/Vision/FRONT",
+            "/Robot/Vision/FRONT/Tag Poses/1/translation",
+            "/Robot/Vision/FRONT/Tag Poses/0/translation",
+            "/Robot/Aiming/Pass target",
+            "/Robot/Aiming/Pass target/position",
+            "/Robot/Pose/Hub Pose",
+            "/SmartDashboard/Aiming",
+            "/Robot/Pose/Field Side",
+            "/Robot/Aiming/Pass target position",
+            "/Robot/Aiming/Auto angle",
+            "/Robot/Pose/Zone",
+            "/Robot/DEBUG/angle",
+            "/Robot/Swerve/Desired Module States",
+            "/Robot",
+            "/Robot/Feeder/Floor Motor",
+            "/Robot/SwerveAlign",
+            "/Robot/Autos",
+            "/Robot/Intake",
+            "/Robot/Intake/Intake B Motor",
+            "/Robot/Robot",
+            "/Robot/Misc",
+            "/Robot/SystemStats",
+            "/LiveWindow",
+            "/LiveWindow/.status",
+            "/FMSInfo",
+            "/Robot/RadioStatus",
+            "/Robot/RadioStatus/StatusJson",
+            "/Robot/DriverStation",
+            "/Robot/Global",
+            "/photonvision/.timesync",
+            "/photonvision/.timesync/photonvision"
+          ]
+        },
+        "tabs": {
+          "selected": 3,
+          "tabs": [
+            {
+              "type": 0,
+              "title": "",
+              "controller": null,
+              "controllerUUID": "6hveebvgdwhjdb00fnw2vp8fgzn41e18",
+              "renderer": "",
+              "controlsHeight": 0
+            },
+            {
+              "type": 4,
+              "title": "Swerve",
+              "controller": [
+                "NT:/Robot/Swerve/Mod/0 CANcoder",
+                "NT:/Robot/Swerve/Mod/1 CANcoder",
+                "NT:/Robot/Swerve/Mod/2 CANcoder",
+                "NT:/Robot/Swerve/Mod/3 CANcoder"
+              ],
+              "controllerUUID": "ugp4siuymhukb6ofcz9f7hc5i2uste7r",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 9,
+              "title": "Swerve",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "states",
+                    "logKey": "NT:/Robot/Swerve/Actual Module States",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "states",
+                    "logKey": "NT:/Robot/Swerve/Desired Module States",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "rotationLegacy",
+                    "logKey": "NT:/Robot/Pose/Gyro/Heading",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "units": "radians"
+                    }
+                  }
+                ],
+                "maxSpeed": 5,
+                "sizeX": 0.65,
+                "sizeY": 0.65,
+                "orientation": 1
+              },
+              "controllerUUID": "sn2105iyodp0yrnlxshqreiby6yepnnc",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 2,
+              "title": "2D Field",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "NT:/Robot/Pose/Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "bumpers": ""
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/Robot/Pose/Hub Pose",
+                    "logType": "Translation2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/Robot/Vision/FRONT/Tag Poses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/Robot/Aiming/Corner target",
+                    "logType": "Translation2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/Robot/Aiming/Trench target",
+                    "logType": "Translation2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/Robot/Aiming/Middle target",
+                    "logType": "Translation2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/Robot/Aiming/Pass target position",
+                    "logType": "Translation2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/Robot/Pose/PP Current Pose",
+                    "logType": "Pose2d",
+                    "visible": false,
+                    "options": {
+                      "color": "#ffff00"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/PathPlanner/targetPose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ffff"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:/PathPlanner/activePath",
+                    "logType": "Pose2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/Robot/Vision/FRONT/Pose",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/Robot/DEBUG/Target pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff00ff"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/Robot/Autos/Starting Pose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
+                  }
+                ],
+                "field": "FRC:2026 Field",
+                "orientation": 2,
+                "size": "large"
+              },
+              "controllerUUID": "lcepcy06xry5zccxau82yt3l0l4jqdvz",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Shooter",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Shooter/Target RPS",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Shooter/Flywheel A Motor/Velocity (RPS)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Shooter/Flywheel B Motor/Velocity (RPS)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Shooter/Flywheel C Motor/Velocity (RPS)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#d993aa",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Shooter/Flywheel D Motor/Velocity (RPS)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#5f4528",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Shooter/Flywheel A Motor/Voltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Global/Stator Current (Amps)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Shooter/At Speed",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "qbzkrldde6k2fzwfgfw38ffa9hixbm8g",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Floor",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Feeder/Floor Motor/Velocity (RPS)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Feeder/Floor Motor/Stator Current (Amps)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Global/Stator Current (Amps)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Feeder/Floor B Motor/Velocity (RPS)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Feeder/Floor Motor/Supply Current (Amps)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Feeder/Floor Motor/Voltage",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Feeder/Floor B Motor/Voltage",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "ihf6ikpho4d5vtbkrbb278svaax688uf",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Feeder",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Feeder/Feeder Motor/Stator Current (Amps)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Feeder/Feeder Motor/Supply Current (Amps)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Feeder/Feeder Motor/Voltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Robot/Feeder/Current Command",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "bu58kr4b028v2knihdgn6qee8w7yh4ar",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
+              "title": "Intake",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Intake/Intake A Motor/Voltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Intake/Intake B Motor/Voltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Intake/Intake A Motor/Velocity (RPS)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Intake/Intake A Motor/Stator Current (Amps)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Intake/Intake A Motor/Supply Current (Amps)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Robot/Intake/Current Command",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Robot/Intake/Mode",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/Robot/Intake/Pulse In",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "a66g2tr9f2dfhc8tuqk76yhgfqgf7ifi",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 4,
+              "title": "Status",
+              "controller": [
+                "NT:/Robot/Misc/Robot Status",
+                "NT:/Robot/Robot/Status",
+                "NT:/SmartDashboard/Shift",
+                "NT:/Robot/Swerve/Current Command",
+                "NT:/SmartDashboard/Match Time"
+              ],
+              "controllerUUID": "6oe86zcv163h25f30cfi5io02z5shqmd",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 4,
+              "title": "LED",
+              "controller": [
+                "NT:/SmartDashboard/Shift",
+                "NT:/SmartDashboard/Hub Active",
+                "NT:/Robot/LED/State",
+                "NT:/Robot/LED/Status"
+              ],
+              "controllerUUID": "gl7smozyohjxdv17zu8n4592emq8jnnx",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 4,
+              "title": "Table",
+              "controller": [
+                "NT:/Robot/Superstructure/lastWarned",
+                "NT:/Robot/Superstructure/shiftTime",
+                "NT:/Robot/Superstructure/currentShift",
+                "NT:/Robot/Superstructure/lastShift",
+                "NT:/Robot/Superstructure/shiftReset",
+                "NT:/Robot/Superstructure/debug1",
+                "NT:/Robot/Superstructure/debug2",
+                "NT:/Robot/Superstructure/shiftWarned"
+              ],
+              "controllerUUID": "ti63ym04c5b07rqqe3ngfuxcaf18jh38",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 1,
+              "title": "Execution time",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Misc/Loop Cycle Time (ms)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/Robot/Vision/Execution Time (ms)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "ep22anmgxojnk0rbhadyg7yk8gpvbrio",
+              "renderer": null,
+              "controlsHeight": 200
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [],
+  "version": "26.0.0"
+}

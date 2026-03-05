@@ -1,0 +1,84 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.2,
+        "y": 0.55
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.199999999999999,
+        "y": 0.55
+      },
+      "isLocked": false,
+      "linkedName": "Right trench"
+    },
+    {
+      "anchor": {
+        "x": 8.4,
+        "y": 0.9
+      },
+      "prevControl": {
+        "x": 8.124121464749809,
+        "y": 0.5370041106336088
+      },
+      "nextControl": {
+        "x": 8.71603210724152,
+        "y": 1.315829218943887
+      },
+      "isLocked": false,
+      "linkedName": "RT-FNZ Waypoint"
+    },
+    {
+      "anchor": {
+        "x": 8.6,
+        "y": 3.512
+      },
+      "prevControl": {
+        "x": 8.6,
+        "y": 2.512
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Right FNZ"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.2,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.75,
+        "maxAcceleration": 9.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 1080.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.3,
+    "maxAcceleration": 9.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 1080.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": false
+}

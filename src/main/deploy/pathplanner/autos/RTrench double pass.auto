@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RTrench pass through fuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RTrench return from fuel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RTrench second pass through fuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RTrench second return from fuel"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
