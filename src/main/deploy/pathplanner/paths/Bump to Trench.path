@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.15,
-        "y": 4.03
+        "x": 2.75,
+        "y": 2.3
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1500000000000004,
-        "y": 4.03
+        "x": 2.386291390728477,
+        "y": 1.4214238410596023
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Bump - Shooting"
     },
     {
       "anchor": {
-        "x": 0.45,
-        "y": 4.03
+        "x": 3.0,
+        "y": 0.8
       },
       "prevControl": {
-        "x": 1.4499999999999997,
-        "y": 4.03
+        "x": 2.3003551015093655,
+        "y": 0.8222938560152694
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,31 +31,24 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Shoot",
-      "waypointRelativePos": 0.4,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 0.25,
-    "maxAcceleration": 10.0,
+    "maxVelocity": 3.6,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 1080.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.5,
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "SOTM Calibration",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 50.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

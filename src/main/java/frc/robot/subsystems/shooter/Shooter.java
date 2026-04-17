@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -15,7 +16,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.util.LoggedCommands;
 import frc.lib.util.LynkMotor;
 import frc.lib.util.LynkSubsystem;
+import frc.robot.Aiming;
 import frc.robot.Ports;
+import frc.robot.subsystems.controls.ControlsConstants;
 import frc.robot.subsystems.pose.Pose;
 import frc.robot.subsystems.shooter.ShooterConstants.ShooterMode;
 
@@ -78,32 +81,31 @@ public class Shooter extends LynkSubsystem<Shooter> {
         SmartDashboard.putData("Set Voltage", LoggedCommands.runOnce("Set Voltage", () -> flywheelMotorA.setControl(flywheelVoltage.withOutput(SmartDashboard.getNumber("Direct Voltage", 0)))));
         SmartDashboard.putNumber("Direct RPM", 0);
         SmartDashboard.putData("Set RPM", LoggedCommands.runOnce("Set RPM", () -> setTargetRPM(SmartDashboard.getNumber("Direct RPM", 0))));
-    
+
+        /* SysId routine for characterizing flywheel control */
         sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,        // Use default ramp rate (1 V/s)
                 null,     // Use default step voltage (7 V)
                 null,         // Use default timeout (10 s)
-                (state) -> DogLog.log(name + "/SysIdState", state.toString())
+                state -> SignalLogger.writeString("SysId_State", state.toString())
             ),
             new SysIdRoutine.Mechanism(
-                (volts) -> flywheelMotorA.setControl(flywheelVoltage.withOutput(volts)),
+                volts -> flywheelMotorA.setControl(flywheelVoltage.withOutput(volts)),
                 null,        // No loggable measurements for flywheel
                 this
             )
         );
 
-        // Add SysIdRoutine commands to SmartDashboard
-        SmartDashboard.putData("Shooter SysId Quasistatic Forward", sysIdQuasistaticForward());
-        SmartDashboard.putData("Shooter SysId Quasistatic Reverse", sysIdQuasistaticReverse());
-        SmartDashboard.putData("Shooter SysId Dynamic Forward", sysIdDynamicForward());
-        SmartDashboard.putData("Shooter SysId Dynamic Reverse", sysIdDynamicReverse());
-
-        setDefaultCommand(Idle());
+        if (ControlsConstants.controlMode != ControlsConstants.ControlMode.FLYWHEEL_SYSID) {
+            setDefaultCommand(Idle());
+        }
     }
 
     public void runIdle() {
+        DogLog.log("Shooter/Idle Before", Timer.getFPGATimestamp());
         setTargetRPM(ShooterConstants.idleRPM, true);
+        DogLog.log("Shooter/Idle After", Timer.getFPGATimestamp());
         // kickerMotor.set(0);
 
         shooterMode = ShooterMode.IDLE;
@@ -130,7 +132,7 @@ public class Shooter extends LynkSubsystem<Shooter> {
     }
 
     public void shoot() {
-        shoot(Pose.instance.hubDistance(), ShooterMode.SHOOTING);
+        shoot(Aiming.virtualHubDistance(), ShooterMode.SHOOTING);
     }
 
     public void shoot(double distance) {
@@ -190,51 +192,6 @@ public class Shooter extends LynkSubsystem<Shooter> {
         return shotTimer.isRunning();
     }
 
-    /**
-     * Configure follower motors for SysId testing
-     * When enabled, follower motors will be stopped to prevent them from interfering with characterization
-     */
-    public void configureFollowersForSysId(boolean enableSysId) {
-        if (enableSysId) {
-            // Stop follower motors during SysId testing to get accurate characterization of main motor
-            flywheelMotorB.stopMotor();
-            flywheelMotorC.stopMotor();
-            flywheelMotorD.stopMotor();
-        } else {
-            // Re-enable follower configuration after SysId testing
-            flywheelMotorB.setControl(new Follower(flywheelMotorA.getDeviceID(), MotorAlignmentValue.Aligned));
-            flywheelMotorC.setControl(new Follower(flywheelMotorA.getDeviceID(), MotorAlignmentValue.Opposed));
-            flywheelMotorD.setControl(new Follower(flywheelMotorA.getDeviceID(), MotorAlignmentValue.Opposed));
-        }
-    }
-
-    /**
-     * SysIdRoutine command that properly configures followers before and after testing
-     */
-    public Command sysIdQuasistaticForward() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward)
-            .beforeStarting(() -> configureFollowersForSysId(true))
-            .andThen(() -> configureFollowersForSysId(false));
-    }
-
-    public Command sysIdQuasistaticReverse() {
-        return sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse)
-            .beforeStarting(() -> configureFollowersForSysId(true))
-            .andThen(() -> configureFollowersForSysId(false));
-    }
-
-    public Command sysIdDynamicForward() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward)
-            .beforeStarting(() -> configureFollowersForSysId(true))
-            .andThen(() -> configureFollowersForSysId(false));
-    }
-
-    public Command sysIdDynamicReverse() {
-        return sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse)
-            .beforeStarting(() -> configureFollowersForSysId(true))
-            .andThen(() -> configureFollowersForSysId(false));
-    }
-
     public void stop() {
         targetRPM = 0.0;
         flywheelMotorA.stopMotor();
@@ -262,6 +219,11 @@ public class Shooter extends LynkSubsystem<Shooter> {
         return currentRPM >= targetRPM;
     }
 
+    private boolean nearPassingSpeed() {
+        double currentRPM = flywheelMotorA.getVelocity().getValue().in(Units.RPM);
+        return currentRPM >= targetRPM || (targetRPM > 4000 && currentRPM >= (0.90 * targetRPM));
+    }
+
     public void notifyLoaded() {
         loaded = true;
     }
@@ -270,12 +232,20 @@ public class Shooter extends LynkSubsystem<Shooter> {
         return LoggedCommands.runOnce("Adjusting shooter for load", this::notifyLoaded);
     }
 
+    public Command SysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
+
+    public Command SysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
+    }
+
     public void periodic() {
         super.periodic();
 
         if (shooterMode == ShooterMode.SPINNING) {
             assert(pendingMode != null) : "Pending mode should not be null when spinning up";
-            if (atSpeed()) {
+            if (atSpeed() || (pendingMode == ShooterMode.PASSING && nearPassingSpeed())) {
                 shooterMode = pendingMode;
                 pendingMode = null;
                 spinupTimer.stop();
@@ -294,12 +264,17 @@ public class Shooter extends LynkSubsystem<Shooter> {
             }
         }
 
+        if (loaded && shotTimer.isRunning() && shooterMode == ShooterMode.SHOOTING && shotTimer.get() >= ShooterConstants.loadedExpiry) {
+            loaded = false;
+        }
+
         DogLog.log(name + "/Target RPM", targetRPM);
         DogLog.log(name + "/Target RPS", targetRPM / 60.0);
         DogLog.log(name + "/Current RPM", flywheelMotorA.getVelocity().getValue().in(Units.RPM));
         DogLog.log(name + "/Mode", shooterMode);
         DogLog.log(name + "/Spinup Timeouts", spinupTimeoutCount);
         DogLog.log(name + "/Shot Timer", getShotTimer());
+        DogLog.log(name + "/Loaded", loaded);
         SmartDashboard.putBoolean(name + "/Near Speed", nearSpeed());
         SmartDashboard.putBoolean(name + "/At Speed", atSpeed());
     }

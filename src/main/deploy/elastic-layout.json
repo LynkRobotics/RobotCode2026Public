@@ -118,7 +118,7 @@
             }
           },
           {
-            "title": "photonvision_Port_1182_Output_MJPEG_Server",
+            "title": "Front Left Camera",
             "x": 608.0,
             "y": 128.0,
             "width": 512.0,
@@ -169,32 +169,6 @@
             }
           },
           {
-            "title": "Hub Active (Testing)",
-            "x": 1728.0,
-            "y": 0.0,
-            "width": 192.0,
-            "height": 128.0,
-            "type": "Toggle Button",
-            "properties": {
-              "topic": "/SmartDashboard/TunableOptions/Hub Active (Testing)",
-              "period": 0.06,
-              "data_type": "boolean"
-            }
-          },
-          {
-            "title": "Pac-Man Mode",
-            "x": 1536.0,
-            "y": 0.0,
-            "width": 192.0,
-            "height": 128.0,
-            "type": "Toggle Button",
-            "properties": {
-              "topic": "/SmartDashboard/TunableOptions/Pac-Man Mode",
-              "period": 0.06,
-              "data_type": "boolean"
-            }
-          },
-          {
             "title": "Shot Select",
             "x": 416.0,
             "y": 128.0,
@@ -218,6 +192,71 @@
               "topic": "/SmartDashboard/Shift",
               "period": 0.06,
               "data_type": "string"
+            }
+          },
+          {
+            "title": "Won Auto",
+            "x": 416.0,
+            "y": 352.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Won Auto",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Hold X on Shoot",
+            "x": 1760.0,
+            "y": 0.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/SmartDashboard/TunableOptions/Hold X on Shoot",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Shoot on the Move",
+            "x": 1408.0,
+            "y": 0.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/SmartDashboard/TunableOptions/Shoot on the Move",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Limit Rotation Speed",
+            "x": 1568.0,
+            "y": 0.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/SmartDashboard/TunableOptions/Limit Rotation Speed",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Treat as loaded early",
+            "x": 672.0,
+            "y": 0.0,
+            "width": 224.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/TunableOptions/Treat as loaded early",
+              "period": 0.06,
+              "data_type": "boolean"
             }
           }
         ]
@@ -362,6 +401,124 @@
               "topic": "/SmartDashboard/TunableOptions/Mirror Auto to Left",
               "period": 0.06,
               "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Deploy Intake",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Feeder/Deploy Intake",
+              "period": 0.06,
+              "show_type": true,
+              "maximize_button_space": false
+            }
+          },
+          {
+            "title": "First Pass Depth",
+            "x": 320.0,
+            "y": 384.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/auto/AutoBuilderOption/First Pass Depth",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "First Priority",
+            "x": 160.0,
+            "y": 384.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/auto/AutoBuilderOption/First Priority",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Fuel Intake Depth",
+            "x": 480.0,
+            "y": 384.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/auto/AutoBuilderOption/Fuel Intake Depth",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Intake Speed",
+            "x": 640.0,
+            "y": 384.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/auto/AutoBuilderOption/Intake Speed",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Return Method",
+            "x": 800.0,
+            "y": 384.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/auto/AutoBuilderOption/Return Method",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Starting Point",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/auto/AutoBuilderOption/Starting Point",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Sweep Speed",
+            "x": 1120.0,
+            "y": 384.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/auto/AutoBuilderOption/Sweep Speed",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Sweep Type",
+            "x": 960.0,
+            "y": 384.0,
+            "width": 160.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/auto/AutoBuilderOption/Sweep Type",
+              "period": 0.06,
+              "sort_options": false
             }
           }
         ]
@@ -784,6 +941,192 @@
               "period": 0.06,
               "show_type": true,
               "maximize_button_space": false
+            }
+          },
+          {
+            "title": "Pac-Man Mode",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/SmartDashboard/TunableOptions/Pac-Man Mode",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Hub Active (Testing)",
+            "x": 960.0,
+            "y": 0.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/SmartDashboard/TunableOptions/Hub Active (Testing)",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Disable Signal Logging (Logged)",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Disable Signal Logging (Logged)",
+              "period": 0.06,
+              "show_type": true,
+              "maximize_button_space": false
+            }
+          },
+          {
+            "title": "Enable Signal Logging (Logged)",
+            "x": 768.0,
+            "y": 128.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Enable Signal Logging (Logged)",
+              "period": 0.06,
+              "show_type": true,
+              "maximize_button_space": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "All Cams",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Right Side",
+            "x": 1440.0,
+            "y": 0.0,
+            "width": 480.0,
+            "height": 416.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision2_Port_1182_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "fps": 3,
+              "resolution": [
+                160.0,
+                120.0
+              ]
+            }
+          },
+          {
+            "title": "Front Right",
+            "x": 960.0,
+            "y": 0.0,
+            "width": 480.0,
+            "height": 416.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision2_Port_1184_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "fps": 3,
+              "resolution": [
+                160.0,
+                120.0
+              ]
+            }
+          },
+          {
+            "title": "Left Side",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 480.0,
+            "height": 416.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision_Port_1184_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "fps": 3,
+              "resolution": [
+                160.0,
+                120.0
+              ]
+            }
+          },
+          {
+            "title": "Front Left",
+            "x": 480.0,
+            "y": 0.0,
+            "width": 480.0,
+            "height": 416.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision_Port_1182_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "fps": 3,
+              "resolution": [
+                160.0,
+                120.0
+              ]
+            }
+          },
+          {
+            "title": "FRONTLEFT Enabled",
+            "x": 544.0,
+            "y": 416.0,
+            "width": 352.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/Vision/FRONTLEFT Enabled",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "FRONTRIGHT Enabled",
+            "x": 1024.0,
+            "y": 416.0,
+            "width": 352.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/Vision/FRONTRIGHT Enabled",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "SIDELEFT Enabled",
+            "x": 64.0,
+            "y": 416.0,
+            "width": 352.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/Vision/SIDELEFT Enabled",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "SIDERIGHT Enabled",
+            "x": 1504.0,
+            "y": 416.0,
+            "width": 352.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/Vision/SIDERIGHT Enabled",
+              "period": 0.06,
+              "data_type": "boolean"
             }
           }
         ]

@@ -11,8 +11,10 @@ import frc.lib.util.LoggedCommands;
 import frc.robot.Robot;
 import frc.robot.Constants;
 import frc.robot.Field;
+import frc.robot.subsystems.pose.Pose;
 import frc.robot.subsystems.vision.VisionConstants.Camera;
 import frc.robot.subsystems.vision.VisionConstants.CameraMode;
+import frc.robot.subsystems.vision.VisionConstants.VisionOverride;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -53,6 +55,7 @@ public class Vision extends SubsystemBase {
     // private static final EnumMap<Camera, Field2d> field = new EnumMap<>(Camera.class);
     private static CameraMode cameraMode = CameraMode.DEFAULT;
     private static double lastTimestamp = 0.0;
+    private static VisionOverride visionOverride = VisionOverride.NONE;
 
     private static record PoseResult(double timestamp, Pose3d pose, List<Short> fiducialIDs, double ambiguity, double averageTagDistance) {
     }
@@ -77,12 +80,8 @@ public class Vision extends SubsystemBase {
         return LoggedCommands.runOnce("Switch to default vision", () -> setCameraMode(CameraMode.DEFAULT));
     }
 
-    public static Command SwitchToFrontVision() {
-        return LoggedCommands.runOnce("Switch to front vision", () -> setCameraMode(CameraMode.FRONT));
-    }
-
-    public static Command SwitchToRearVision() {
-        return LoggedCommands.runOnce("Switch to rear vision", () -> setCameraMode(CameraMode.REAR));
+    public static Command SwitchToSideVision() {
+        return LoggedCommands.runOnce("Switch to side vision", () -> setCameraMode(CameraMode.SIDE));
     }
 
     public static void setPoseEstimator(PoseEstimator<SwerveModulePosition[]> poseEstimator) {
@@ -215,6 +214,21 @@ public class Vision extends SubsystemBase {
         return false;
     }
 
+    public Command takeSnapshot() {
+        return LoggedCommands.runOnce("Take vision snapshot", () -> {
+            cameras.get(Camera.FRONTLEFT).takeOutputSnapshot();
+            cameras.get(Camera.FRONTRIGHT).takeOutputSnapshot();
+            cameras.get(Camera.SIDELEFT).takeOutputSnapshot();
+            cameras.get(Camera.SIDERIGHT).takeOutputSnapshot();
+        });
+    }
+
+    public Command ForceVisionUpdate() {
+        return LoggedCommands.sequence("Force Vision Update",
+            LoggedCommands.runOnce("Take next vision update", () -> visionOverride = VisionOverride.NEXT_ONE),
+            LoggedCommands.waitUntil("Wait for vision update", () -> visionOverride != VisionOverride.NEXT_ONE));
+    }
+
     @Override
     public void periodic() {
         Rotation2d heading = null;
@@ -223,9 +237,9 @@ public class Vision extends SubsystemBase {
         // boolean selectedResult = false;
         double startTimestamp;
 
-        if (Constants.profileTime) {
+        // if (Constants.profileTime) {
             startTimestamp = Timer.getFPGATimestamp();
-        }
+        // }
 
         if (headingProvider != null) {
             heading = headingProvider.get();
@@ -238,6 +252,7 @@ public class Vision extends SubsystemBase {
                 camerasEnabled.add(cameraType);
             }
         }
+        DogLog.log("Vision/Vision Override", visionOverride.toString());
 
         // double partialTimestamp;
         // if (Constants.profileTime) {
@@ -256,6 +271,8 @@ public class Vision extends SubsystemBase {
             for (PoseResult poseResult : results) {
                 DogLog.log(logPrefix + "Timestamp", poseResult.timestamp);
                 DogLog.log(logPrefix + "Pose", poseResult.pose);
+                // SignalLogger.writeStruct(logPrefix + "Pose3d" , Pose3d.struct, poseResult.pose, startTimestamp - poseResult.timestamp);
+                // SignalLogger.writeStruct(logPrefix + "Pose2d" , Pose2d.struct, poseResult.pose.toPose2d(), startTimestamp - poseResult.timestamp);
                 DogLog.log(logPrefix + "Ambiguity", poseResult.ambiguity);
                 DogLog.log(logPrefix + "Distance", poseResult.averageTagDistance);
                 DogLog.log(logPrefix + "Tag Poses", (Pose3d[])poseResult.fiducialIDs.stream().map(tag -> Constants.fieldLayout.getTagPose(tag).get()).toArray(size -> new Pose3d[size]));
@@ -267,10 +284,19 @@ public class Vision extends SubsystemBase {
                         DogLog.log("Vision/Status", "Unable to add vision measurement without a pose estimator");
                     } else {
                         double stdDevFactor = cameraMode.getStdDev(cameraType) * poseResult.averageTagDistance * poseResult.averageTagDistance / poseResult.fiducialIDs.size();
+                        if (Pose.instance != null && !Pose.instance.getOdometryReliable()) {
+                            stdDevFactor *= VisionConstants.odometryUnreliableMultiplier;
+                        }
                         double linearStdDev = VisionConstants.linearStdDevBaseline * stdDevFactor * camerasEnabled.size();
                         double angularStdDev = VisionConstants.angularStdDevBaseline * stdDevFactor * camerasEnabled.size();
 
                         Pose2d pose = poseResult.pose.toPose2d();
+                        if (visionOverride == VisionOverride.NEXT_ONE) {
+                            // TODO Do we care which camera?
+                            linearStdDev = 0.0001;
+                            visionOverride = VisionOverride.NONE;
+                            Pose.instance.setPose(pose); // Just adding the measurement isn't enough
+                        }
                         poseEstimator.addVisionMeasurement(pose, poseResult.timestamp, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
                         DogLog.log("Vision/Status", "Adding vision measurement from " + cameraType + " at " + poseResult.timestamp + " with stddev " + String.format("%1.4f", linearStdDev));
                         if (poseResult.timestamp > lastTimestamp) {
@@ -292,7 +318,8 @@ public class Vision extends SubsystemBase {
         if (dashboardCounter++ >= VisionConstants.dashboardInterval) {
             Robot.field.getObject("Vision").setPose(lastPose);
             dashboardCounter = 0;
-        } 
+        }
+        DogLog.log("Vision/Time Since Result", timeSinceVision());
         SmartDashboard.putBoolean("Vision/Have Pose", havePose);
         // SmartDashboard.putBoolean("Vision/Selected Result", selectedResult);
 

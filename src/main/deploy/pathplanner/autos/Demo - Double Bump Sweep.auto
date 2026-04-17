@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RTrench through NZ"
+            "pathName": "Trench - Midline - Middle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NZ back to Right Trench"
+            "pathName": "Bump Return - Middle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RT Sweep"
+            "pathName": "Sweep - Bump"
           }
         }
       ]

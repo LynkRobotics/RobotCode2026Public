@@ -11,17 +11,19 @@ public class Field {
     public static final Distance width = Units.Meters.of(FlippingUtil.fieldSizeY); // Units.inchesToMeters(26*12 + 5);
     public static final Distance length = Units.Meters.of(FlippingUtil.fieldSizeX); // Units.inchesToMeters(57*12 + 6.875);
 
-    public static final Distance deepPass = Units.Meters.of(0.7);
+    public static final Distance deepPass = Units.Meters.of(1.5);
     public static final Distance shallowPass = Units.Meters.of(3.2);
     public static final Distance nearWall = Units.Meters.of(1.0);
+    public static final Distance nearishWall = Units.Meters.of(1.75);
     public static final Distance nearMiddle = Units.Meters.of(2.9);
 
     public static final double zoneHysteresis = 0.25; // meters
     public static final double trenchRunHalfLength = 2.5; // meters
-    public static final double trenchHysteresis = 0.25; // meters
+    public static final double trenchShortLength = 1.4; // meters
+    public static final double trenchHysteresis = 0.18; // meters
 
     public enum PassTarget {
-        CORNER(deepPass, nearWall),
+        CORNER(deepPass, nearishWall),
         TRENCH(shallowPass, nearWall),
         MIDDLE(shallowPass, nearMiddle);
 

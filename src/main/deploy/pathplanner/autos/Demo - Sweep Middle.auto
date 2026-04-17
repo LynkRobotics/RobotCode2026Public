@@ -7,31 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RTrench through far NZ"
+            "pathName": "Trench - Midline - Middle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Far NZ back to Right Trench"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.5
+            "pathName": "Trench Return - Middle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RTrench through near NZ"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Near NZ back to Right Trench"
+            "pathName": "Sweep - Trench"
           }
         }
       ]

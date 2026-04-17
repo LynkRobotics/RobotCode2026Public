@@ -33,6 +33,7 @@ public class LoggedCommands {
             public void initialize() {
                 logInit(command);
                 super.initialize();
+                DogLog.log(key, "Completed init: " + command.getName());
             }
 
             @Override

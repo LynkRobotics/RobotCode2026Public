@@ -4,12 +4,12 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 
 public final class Constants {
-    public static final boolean atHQ = false;
+    public static final boolean atHQ = true;
     public static final boolean fullDashboard = true;
     public static final boolean realtimePriority = true;
     public static final boolean profileTime = true;
     public static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
-    public static final double stickDeadband = 0.1;
+    public static final double stickDeadband = 0.03;
     public static final double driveStickSensitivity = 1.00; 
     public static final double turnStickSensitivity = 1.00;
     public static final double aimingOverride = 0.001;

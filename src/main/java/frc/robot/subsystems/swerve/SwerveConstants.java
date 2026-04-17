@@ -18,7 +18,7 @@ public class SwerveConstants {
     // Multiplier for "slow mode" driving
     public static final double slowMode = 0.5;
     
-    public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK5n.KrakenX60X44(COTSTalonFXSwerveConstants.SDS.MK5n.driveRatios.R2);
+    public static final COTSTalonFXSwerveConstants chosenModule = COTSTalonFXSwerveConstants.SDS.MK5n.KrakenX60X44(COTSTalonFXSwerveConstants.SDS.MK5n.driveRatios.R1);
 
     /* Drivetrain Constants */
     public static final Distance trackWidth = Units.Inches.of(20.75);
@@ -34,6 +34,7 @@ public class SwerveConstants {
         new Translation2d(wheelBase.div(2.0), trackWidth.div(2.0).unaryMinus()),
         new Translation2d(wheelBase.div(2.0).unaryMinus(), trackWidth.div(2.0)),
         new Translation2d(wheelBase.div(2.0).unaryMinus(), trackWidth.div(2.0).unaryMinus()));
+    public static final Translation2d rotationCenter = new Translation2d(Units.Inches.of(6.0), Units.Inches.of(0)); // Set this to the center of your robot if it is not the geometric center
 
     /* Module Gear Ratios */
     public static final double driveGearRatio = chosenModule.driveGearRatio;
@@ -69,7 +70,7 @@ public class SwerveConstants {
     public static final double angleKD = chosenModule.angleKD;
 
     /* Drive Motor PID Values */
-    public static final double driveKP = 1.1315; // NOTE: This must be tuned to specific robot
+    public static final double driveKP = 1.0454; // NOTE: This must be tuned to specific robot
     // 0.89558 for Default
     /* After completeing characterization and inserting 
      * the KS, KV, and KA values into the code, tune the 
@@ -80,13 +81,13 @@ public class SwerveConstants {
     public static final double driveKF = 0.0; //Leave driveKF at 0.0 
 
     /* Drive Motor Characterization Values From SYSID */ 
-    public static final double driveKS = 0.28416;
-    public static final double driveKV = 0.73994;
-    public static final double driveKA = 0.072982;
+    public static final double driveKS = 0.47634;
+    public static final double driveKV = 0.94936;
+    public static final double driveKA = 0.22407;
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    public static final double maxSpeed = 5.12; // MK5n R2
+    public static final double maxSpeed = Units.FeetPerSecond.of(14.4).in(Units.MetersPerSecond); // MK5n R1
     /** Radians per Second */
     public static final double driveRadius = Math.hypot(wheelBase.in(Units.Meters), trackWidth.in(Units.Meters)) / 2.0;
     public static final double maxAngularVelocity = maxSpeed / driveRadius;

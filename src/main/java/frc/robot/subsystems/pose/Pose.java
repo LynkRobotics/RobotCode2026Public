@@ -13,17 +13,21 @@ import com.pathplanner.lib.util.FlippingUtil;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.lib.math.Hysteresis;
+import frc.lib.util.LoggedCommands;
 import frc.robot.Aiming;
 import frc.robot.Field.FieldSide;
 import frc.robot.Field.TrenchStatus;
@@ -34,6 +38,7 @@ import frc.robot.Robot;
 import frc.robot.autos.AutoConstants;
 
 import static frc.robot.Field.trenchRunHalfLength;
+import static frc.robot.Field.trenchShortLength;
 import static frc.robot.Field.zoneHysteresis;
 import static frc.robot.Field.trenchHysteresis;
 
@@ -45,7 +50,9 @@ public class Pose extends SubsystemBase {
     private final Pigeon2 gyro;
     private FieldSide fieldSide = FieldSide.OUTPOST;
     private Zone zone = Zone.ALLIANCE;
+    private Zone trenchEnterZone = zone; // The zone the robot was in when it entered the trench run
     private TrenchStatus trenchStatus = TrenchStatus.IN_RUN;
+    private boolean odometryReliable = true;
 
     public Pose() {
         gyro = new Pigeon2(Ports.PIGEON.id, Ports.PIGEON.bus);
@@ -110,6 +117,10 @@ public class Pose extends SubsystemBase {
         //         SmartDashboard.getNumber("Pose/Rot KS", 0.0) * PIDSwerveConstants.maxAngularVelocity,
         //         true),
         //         Swerve.instance::Stop, Swerve.instance));
+    }
+
+    public boolean getOdometryReliable() {
+        return odometryReliable;
     }
 
     public static String prettyPose(Pose2d pose) {
@@ -229,12 +240,30 @@ public class Pose extends SubsystemBase {
         return blueY > FieldConstants.LinesHorizontal.rightBumpEnd && blueY < FieldConstants.LinesHorizontal.leftBumpStart;
     }
 
+    public boolean isLevel() {
+        return gyro.getGravityVectorZ().getValue() > 0.985;
+    }
+
+    public Command StayLevel() {
+        return LoggedCommands.waitUntil("Stay Level", () -> !this.isLevel());
+    }
+
     public TrenchStatus getTrenchStatus(Translation2d bluePosition) {
-        if (!insideBumpY(bluePosition.getY())) {
+        double blueY = bluePosition.getY();
+        double yAdjustment = trenchHysteresis / 2.0;
+
+        // Bias the Y position towards staying in or out of the trench run
+        if (blueY > FieldConstants.LinesHorizontal.center) {
+            blueY += trenchStatus == TrenchStatus.IN_RUN ? yAdjustment : -yAdjustment;
+        } else {
+            blueY += trenchStatus == TrenchStatus.IN_RUN ? -yAdjustment : yAdjustment;
+        }
+
+        if (!insideBumpY(blueY)) {
             double x = bluePosition.getX();
             
             if (x < FieldConstants.LinesVertical.hubCenter) {
-                return Hysteresis.calculate(x, FieldConstants.LinesVertical.hubCenter - trenchRunHalfLength, trenchHysteresis, trenchStatus, TrenchStatus.OUT_RUN, TrenchStatus.IN_RUN);
+                return Hysteresis.calculate(x, FieldConstants.LinesVertical.hubCenter - (trenchStatus == TrenchStatus.IN_RUN && trenchEnterZone == Zone.REMOTE ? trenchShortLength : trenchRunHalfLength), trenchHysteresis, trenchStatus, TrenchStatus.OUT_RUN, TrenchStatus.IN_RUN);
             } else if (x < FieldConstants.LinesVertical.hubCenter + trenchRunHalfLength + trenchHysteresis) {
                 return Hysteresis.calculate(x, FieldConstants.LinesVertical.hubCenter + trenchRunHalfLength, trenchHysteresis, trenchStatus, TrenchStatus.IN_RUN, TrenchStatus.OUT_RUN);
             } else if (x < FieldConstants.LinesVertical.oppHubCenter) {
@@ -261,10 +290,32 @@ public class Pose extends SubsystemBase {
 
     @Override
     public void periodic() {
-        poseEstimator.update(getGyroYaw(), Swerve.instance.getModulePositions());
-        Pose2d pose = getPose();
+        SwerveModulePosition[] modulePositions = Swerve.instance.getModulePositions();
+        DogLog.log("Pose/Level", isLevel());
+        odometryReliable = isLevel(); // If the robot is not level, we cannot trust the odometry because the wheels may be slipping, so we will not update the pose estimator with the module positions to prevent it from thinking we have moved when we are tilted
+        DogLog.log("Pose/Odometry Reliable", odometryReliable);
+        // TODO Fix this -- setting to 0 resets the position
+        // if (!odometryReliable) {
+        //     for (SwerveModulePosition modulePosition : modulePositions) {
+        //         modulePosition.distanceMeters = 0; // Set the distance to 0 to prevent the pose estimator from thinking we have moved when we are tilted
+        //     }
+        // }
+
+        Pose2d pose = poseEstimator.update(getGyroYaw(), modulePositions);
         Translation2d position = pose.getTranslation();
         Translation2d bluePosition = flipIfRed(position);
+        double blueX = bluePosition.getX();
+        double blueY = bluePosition.getY();
+
+        if (blueX < PoseConstants.minX || blueX > PoseConstants.maxX || blueY < PoseConstants.minY || blueY > PoseConstants.maxY) {
+            DogLog.log("Pose/OOB", pose);
+            blueX = MathUtil.clamp(blueX, PoseConstants.minX, PoseConstants.maxX);
+            blueY = MathUtil.clamp(blueY, PoseConstants.minY, PoseConstants.maxY);
+            bluePosition = new Translation2d(blueX, blueY);
+            position = flipIfRed(bluePosition);
+            poseEstimator.resetTranslation(position);
+            pose = new Pose2d(position, pose.getRotation());
+        }
 
         if (dashboardCounter++ >= PoseConstants.dashboardInterval) {
             Robot.field.setRobotPose(pose);
@@ -272,13 +323,18 @@ public class Pose extends SubsystemBase {
         }
         
         fieldSide = Hysteresis.calculate(bluePosition.getY(), FieldConstants.LinesHorizontal.center, PoseConstants.fieldSideBuffer.in(Units.Meters) / 2.0, fieldSide, FieldSide.OUTPOST, FieldSide.DEPOT);
-        trenchStatus = getTrenchStatus(bluePosition);
         zone = getZone(bluePosition);
+        TrenchStatus oldTrenchStatus = trenchStatus;
+        trenchStatus = getTrenchStatus(bluePosition);
+        if (trenchStatus == TrenchStatus.IN_RUN && trenchStatus != oldTrenchStatus) {
+            trenchEnterZone = zone;
+        }
         
         DogLog.log("Pose/Pose", pose);
         DogLog.log("Pose/Field Side", fieldSide);
         DogLog.log("Pose/Zone", zone);
         DogLog.log("Pose/Trench Status", trenchStatus);
+        DogLog.log("Pose/Trench Entered Zone", trenchEnterZone);
         DogLog.log("Pose/Gyro/Heading", getHeading().getDegrees());
         DogLog.log("Pose/Gyro/Raw Yaw", getGyroYaw());
         DogLog.log("Pose/Hub Pose", hubCenter());

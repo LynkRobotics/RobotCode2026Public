@@ -31,6 +31,8 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.superstructure.Superstructure;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.pidswerve.PIDSwerve;
+import frc.robot.commands.pidswerve.PIDSwerveConstants.PIDSpeed;
 
 public class Controls extends SubsystemBase {
     public static final Controls instance = new Controls();
@@ -82,39 +84,52 @@ public class Controls extends SubsystemBase {
     }
 
     public void configureButtonBindings() {
-        boolean sysIdSteer = false;
-        boolean sysIdDrive = false;
-        boolean testControls = false;
-
-        if (sysIdSteer) {
-            driver.a().whileTrue(Swerve.instance.sysIdSteerQuasistatic(SysIdRoutine.Direction.kForward).finallyDo(Swerve.instance::stopSwerve));
-            driver.b().whileTrue(Swerve.instance.sysIdSteerQuasistatic(SysIdRoutine.Direction.kReverse).finallyDo(Swerve.instance::stopSwerve));
-            driver.x().whileTrue(Swerve.instance.sysIdSteerDynamic(SysIdRoutine.Direction.kForward).finallyDo(Swerve.instance::stopSwerve));
-            driver.y().whileTrue(Swerve.instance.sysIdSteerDynamic(SysIdRoutine.Direction.kReverse).finallyDo(Swerve.instance::stopSwerve));
-            driver.leftBumper().onTrue(LoggedCommands.runOnce("Start signal logger", SignalLogger::start));
-            driver.rightBumper().onTrue(LoggedCommands.runOnce("Stop signal logger", SignalLogger::stop));
-        } else if (sysIdDrive) {
-            driver.a().whileTrue(Swerve.instance.sysIdDriveQuasistatic(SysIdRoutine.Direction.kForward).finallyDo(Swerve.instance::stopSwerve));
-            driver.b().whileTrue(Swerve.instance.sysIdDriveQuasistatic(SysIdRoutine.Direction.kReverse).finallyDo(Swerve.instance::stopSwerve));
-            driver.x().whileTrue(Swerve.instance.sysIdDriveDynamic(SysIdRoutine.Direction.kForward).finallyDo(Swerve.instance::stopSwerve));
-            driver.y().whileTrue(Swerve.instance.sysIdDriveDynamic(SysIdRoutine.Direction.kReverse).finallyDo(Swerve.instance::stopSwerve));
-            driver.leftBumper().onTrue(LoggedCommands.runOnce("Start signal logger", SignalLogger::start));
-            driver.rightBumper().onTrue(LoggedCommands.runOnce("Stop signal logger", SignalLogger::stop));
-        } else if (testControls) {
-            driver.a().whileTrue(Superstructure.instance.DeliverToHub());
-            driver.x().whileTrue(Shooter.getInstance().Shoot().finallyDo(Shooter.getInstance()::stop));
-            driver.y().whileTrue(Feeder.getInstance().RunFeederOnly());
-            driver.b().whileTrue(Feeder.getInstance().RunFloorOnly());
-            driver.leftBumper().whileTrue(Intake.getInstance().RunIntake());
-            driver.rightBumper().whileTrue(Intake.getInstance().Pulse());
-        } else {
-            driver.rightTrigger().whileTrue(Superstructure.instance.SmartShoot());
-            driver.rightBumper().whileTrue(Superstructure.instance.DeliverToHub());
-            driver.leftBumper().whileTrue(Superstructure.instance.Intake());
-            driver.leftTrigger().whileTrue(Superstructure.instance.Pass());
-            driver.a().onTrue(LoggedCommands.runOnce("Set Pass CORNER", () -> Aiming.setPassTarget(PassTarget.CORNER)));
-            driver.x().onTrue(LoggedCommands.runOnce("Set Pass MIDDLE", () -> Aiming.setPassTarget(PassTarget.MIDDLE)));
-            driver.b().onTrue(LoggedCommands.runOnce("Set Pass TRENCH", () -> Aiming.setPassTarget(PassTarget.TRENCH)));
+        switch (ControlsConstants.controlMode) {
+            case SWERVE_SYSID_STEER:
+                driver.a().whileTrue(Swerve.instance.sysIdSteerQuasistatic(SysIdRoutine.Direction.kForward).finallyDo(Swerve.instance::stopSwerve));
+                driver.b().whileTrue(Swerve.instance.sysIdSteerQuasistatic(SysIdRoutine.Direction.kReverse).finallyDo(Swerve.instance::stopSwerve));
+                driver.x().whileTrue(Swerve.instance.sysIdSteerDynamic(SysIdRoutine.Direction.kForward).finallyDo(Swerve.instance::stopSwerve));
+                driver.y().whileTrue(Swerve.instance.sysIdSteerDynamic(SysIdRoutine.Direction.kReverse).finallyDo(Swerve.instance::stopSwerve));
+                driver.leftBumper().onTrue(LoggedCommands.runOnce("Start signal logger", SignalLogger::start));
+                driver.rightBumper().onTrue(LoggedCommands.runOnce("Stop signal logger", SignalLogger::stop));
+                break;
+            case SWERVE_SYSID_DRIVE:
+                driver.a().whileTrue(Swerve.instance.sysIdDriveQuasistatic(SysIdRoutine.Direction.kForward).finallyDo(Swerve.instance::stopSwerve));
+                driver.b().whileTrue(Swerve.instance.sysIdDriveQuasistatic(SysIdRoutine.Direction.kReverse).finallyDo(Swerve.instance::stopSwerve));
+                driver.x().whileTrue(Swerve.instance.sysIdDriveDynamic(SysIdRoutine.Direction.kForward).finallyDo(Swerve.instance::stopSwerve));
+                driver.y().whileTrue(Swerve.instance.sysIdDriveDynamic(SysIdRoutine.Direction.kReverse).finallyDo(Swerve.instance::stopSwerve));
+                driver.leftBumper().onTrue(LoggedCommands.runOnce("Start signal logger", SignalLogger::start));
+                driver.rightBumper().onTrue(LoggedCommands.runOnce("Stop signal logger", SignalLogger::stop));
+                break;
+            case FLYWHEEL_SYSID:
+                driver.a().whileTrue(Shooter.getInstance().SysIdQuasistatic(SysIdRoutine.Direction.kForward).finallyDo(Shooter.getInstance()::stop));
+                driver.b().whileTrue(Shooter.getInstance().SysIdQuasistatic(SysIdRoutine.Direction.kReverse).finallyDo(Shooter.getInstance()::stop));
+                driver.x().whileTrue(Shooter.getInstance().SysIdDynamic(SysIdRoutine.Direction.kForward).finallyDo(Shooter.getInstance()::stop));
+                driver.y().whileTrue(Shooter.getInstance().SysIdDynamic(SysIdRoutine.Direction.kReverse).finallyDo(Shooter.getInstance()::stop));
+                driver.leftBumper().onTrue(LoggedCommands.runOnce("Start signal logger", SignalLogger::start));
+                driver.rightBumper().onTrue(LoggedCommands.runOnce("Stop signal logger", SignalLogger::stop));
+                break;
+            case TEST:
+                driver.a().whileTrue(Superstructure.instance.DeliverToHub());
+                driver.x().whileTrue(Shooter.getInstance().Shoot().finallyDo(Shooter.getInstance()::stop));
+                driver.y().whileTrue(Feeder.getInstance().RunFeederOnly());
+                driver.b().whileTrue(Feeder.getInstance().RunFloorOnly());
+                driver.leftBumper().whileTrue(Intake.getInstance().RunIntake());
+                driver.rightBumper().whileTrue(Intake.getInstance().Pulse());
+                break;
+            case DEFAULT:
+            default:
+                driver.rightTrigger().whileTrue(Superstructure.instance.SmartShoot());
+                driver.rightBumper().whileTrue(Superstructure.instance.DeliverToHub());
+                driver.leftBumper().whileTrue(Superstructure.instance.Intake());
+                driver.leftTrigger().whileTrue(Superstructure.instance.Pass());
+                driver.a().onTrue(LoggedCommands.runOnce("Set Pass CORNER", () -> Aiming.setPassTarget(PassTarget.CORNER)));
+                // driver.x().onTrue(LoggedCommands.runOnce("Set Pass MIDDLE", () -> Aiming.setPassTarget(PassTarget.MIDDLE)));
+                Pose2d testPose = new Pose2d(4.62, 1.8, Rotation2d.kCCW_90deg);
+                driver.x().whileTrue(new PIDSwerve(Swerve.instance, Pose.instance, testPose, true, false, PIDSpeed.TURBO, 0.3).andThen(Swerve.instance.Stop()));
+                driver.x().onFalse(Swerve.instance.Stop());
+                driver.b().onTrue(LoggedCommands.runOnce("Set Pass TRENCH", () -> Aiming.setPassTarget(PassTarget.TRENCH)));
+                break;
         }
         driver.rightStick().onTrue(LoggedCommands.runOnce("Toggle automatic aiming", optAutoAiming::toggle));
         driver.back().whileTrue(Superstructure.instance.Unjam());
@@ -135,10 +150,20 @@ public class Controls extends SubsystemBase {
                     Swerve.instance.Stop(),
                     Commands.runOnce(() -> LoggedAlert.Info("Debug", "In Position", "Reached End of Path")),
                     Commands.runOnce(() -> LED.triggerError())));
+            // driver.povLeft().onTrue(
+            //     LoggedCommands.sequence("Test Drive -- 2.5 meters",
+            //         Commands.runOnce(() -> Pose.instance.setPose(Pose.flipIfRed(new Pose2d(2.0, 1.0, Rotation2d.kZero)))),
+            //         LoggedCommands.logWithName("2.5 m path", Autos.instance.PathCommand("Test Drive - 2.5m")),
+            //         LoggedCommands.logWithName("Stop", Swerve.instance.Stop()),
+            //         Commands.runOnce(() -> LoggedAlert.Info("Debug", "In Position", "Reached End of Path")),
+            //         LoggedCommands.runOnce("Test End", () -> LED.triggerError())
+            //     ));
             driver.povLeft().onTrue(
-                LoggedCommands.sequence("Test Drive -- 2.5 meters",
-                    Commands.runOnce(() -> Pose.instance.setPose(Pose.flipIfRed(new Pose2d(2.0, 1.0, Rotation2d.kZero)))),
-                    LoggedCommands.logWithName("2.5 m path", Autos.instance.PathCommand("Test Drive - 2.5m")),
+                LoggedCommands.sequence("Rapid Accel Test",
+                    Commands.runOnce(() -> Pose.instance.setPose(Pose.flipIfRed(new Pose2d(2.0, 1.0, Rotation2d.kCW_90deg)))),
+                    Commands.deadline(
+                        LoggedCommands.logWithName("Rapid Accel", Autos.instance.PathCommand("Rapid Accel")),
+                        Intake.getInstance().RunIntake()),
                     LoggedCommands.logWithName("Stop", Swerve.instance.Stop()),
                     Commands.runOnce(() -> LoggedAlert.Info("Debug", "In Position", "Reached End of Path")),
                     LoggedCommands.runOnce("Test End", () -> LED.triggerError())

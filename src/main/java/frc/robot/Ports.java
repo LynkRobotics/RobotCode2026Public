@@ -10,8 +10,8 @@ public enum Ports {
 	FLOOR(3, Bus.MECH),
 	FLOOR_B(9, Bus.MECH),
 	FEEDER(5, Bus.MECH),
-	INTAKE_A(7, Bus.RIO),     // Primary
-	INTAKE_B(15, Bus.RIO),    // Opposed
+	INTAKE_A(7, Bus.MECH),     // Primary
+	INTAKE_B(15, Bus.MECH),    // Opposed
 	FLYWHEEL_A(10, Bus.MECH), // Primary
 	FLYWHEEL_B(11, Bus.MECH), // Aligned
 	FLYWHEEL_C(12, Bus.MECH), // Opposed

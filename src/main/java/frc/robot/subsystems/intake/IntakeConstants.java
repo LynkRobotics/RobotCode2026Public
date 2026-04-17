@@ -14,6 +14,9 @@ public class IntakeConstants {
 	public static final Voltage intakeReverseVoltage = Units.Volts.of(-8.0);
 	public static final double pulseOutTime = 0.20;
 	public static final double pulseInTime = 0.30;
+	public static final double intakeCurrentDiffWarningLimit = 15.0;
+	public static final double intakeCurrentDiffWarningTime = 0.50;
+	public static final double intakeCurrentFixTime = 0.50;
 
 	public enum IntakeMode {
 		IDLE,
@@ -39,7 +42,6 @@ public class IntakeConstants {
 
 		config.talonConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 		config.talonConfig.CurrentLimits.StatorCurrentLimit = 60.0;
-
 
 		config.talonConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 		config.talonConfig.CurrentLimits.SupplyCurrentLimit = 80.0;

@@ -28,6 +28,8 @@ public enum Shift {
     private final DoublePredicate conditionFn;
     private final DoubleUnaryOperator timeLeftFn;
 
+    private static Optional<Boolean> wonAuto = Optional.empty();
+
     private Shift(String name, DoublePredicate condition, DoubleUnaryOperator timeLeft) {
         niceName = name;
         conditionFn = condition;
@@ -58,23 +60,22 @@ public enum Shift {
     }
 
     public static Optional<Boolean> wonAuto() {
-        String gameData = DriverStation.getGameSpecificMessage();
+        if (wonAuto.isEmpty()) {
+            String gameData = DriverStation.getGameSpecificMessage();
 
-        if (gameData.isEmpty()) {
-            return Optional.empty();
+            if (!gameData.isEmpty()) {
+                wonAuto = switch (gameData.charAt(0)) {
+                    case 'R' -> Optional.of(Robot.isRed());
+                    case 'B' -> Optional.of(!Robot.isRed());
+                    default -> Optional.empty(); // Invalid data
+                };
+                if (wonAuto.isPresent()) {
+                    SmartDashboard.putString("Won Auto", wonAuto.get() ? "W" : "L");
+                }
+            }
         }
 
-        boolean redInactiveFirst = false;
-        switch (gameData.charAt(0)) {
-            case 'R' -> redInactiveFirst = true;
-            case 'B' -> redInactiveFirst = false;
-            default -> { return Optional.empty(); } // Invalid data
-        }
-
-        if (Robot.isRed()) {
-            return Optional.of(redInactiveFirst);
-        }
-        return Optional.of(!redInactiveFirst);
+        return wonAuto;
     }
 
     public boolean isActive() {

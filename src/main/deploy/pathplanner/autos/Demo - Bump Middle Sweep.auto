@@ -7,31 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RTrench pass through fuel"
+            "pathName": "Trench - Midline - Middle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RTrench return from fuel"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.5
+            "pathName": "Bump Return - Middle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RTrench second pass through fuel"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RTrench second return from fuel"
+            "pathName": "Sweep - Trench"
           }
         }
       ]

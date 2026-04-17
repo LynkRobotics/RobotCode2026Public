@@ -3,33 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 1.0
+        "x": 5.867,
+        "y": 2.3
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0,
-        "y": 2.0
+        "x": 4.867,
+        "y": 2.3
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Recovery"
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 3.5
+        "x": 2.75,
+        "y": 2.3
       },
       "prevControl": {
-        "x": 2.0,
-        "y": 2.5
+        "x": 3.75,
+        "y": 2.3
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Bump - Shooting"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.6,
+      "constraints": {
+        "maxVelocity": 2.4,
+        "maxAcceleration": 5.0,
+        "maxAngularVelocity": 90.0,
+        "maxAngularAcceleration": 1080.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -42,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 50.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

@@ -3,64 +3,71 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.5,
-        "y": 2.9
+        "x": 4.425,
+        "y": 0.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.0,
-        "y": 2.9
+        "x": 4.945157143443214,
+        "y": 0.5
       },
       "isLocked": false,
-      "linkedName": "RT Fuel End 2"
+      "linkedName": "RTrench Start"
     },
     {
       "anchor": {
-        "x": 6.672814569536423,
-        "y": 0.85
+        "x": 5.6,
+        "y": 0.5
       },
       "prevControl": {
-        "x": 7.672814569536423,
-        "y": 0.8499999999999998
+        "x": 5.249290677479634,
+        "y": 0.46596486443531615
       },
       "nextControl": {
-        "x": 6.172814569536423,
-        "y": 0.8500000000000001
+        "x": 5.93741483102595,
+        "y": 0.5327449508127525
       },
       "isLocked": false,
       "linkedName": "RT Clear"
     },
     {
       "anchor": {
-        "x": 4.2,
-        "y": 0.55
+        "x": 8.45,
+        "y": 1.25
       },
       "prevControl": {
-        "x": 4.45,
-        "y": 0.55
+        "x": 8.45,
+        "y": 1.0
+      },
+      "nextControl": {
+        "x": 8.45,
+        "y": 2.35
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.5,
+        "y": 3.3
+      },
+      "prevControl": {
+        "x": 8.5,
+        "y": 3.05
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right trench"
+      "linkedName": "Center - Far"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.3,
-      "rotationDegrees": 0.0
-    },
-    {
-      "waypointRelativePos": 0.8,
-      "rotationDegrees": 90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.6,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 1.9,
+      "maxWaypointRelativePos": 3.0,
       "constraints": {
-        "maxVelocity": 2.5,
+        "maxVelocity": 1.5,
         "maxAcceleration": 9.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 1080.0,
@@ -72,8 +79,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.3,
-    "maxAcceleration": 9.0,
+    "maxVelocity": 4.4,
+    "maxAcceleration": 12.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 1080.0,
     "nominalVoltage": 12.0,
@@ -84,10 +91,10 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Start",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": false
 }

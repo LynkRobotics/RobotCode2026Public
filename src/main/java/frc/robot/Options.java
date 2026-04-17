@@ -13,6 +13,8 @@ public final class Options {
     public static final TunableOption optHubActive = new TunableOption("Hub Active (Testing)", true);
     public static final TunableOption optLimitRotation = new TunableOption("Limit Rotation Speed", true);
     public static final TunableOption optHoldX = new TunableOption("Hold X on Shoot", false);
-    public static final TunableOption optHoldAngle = new TunableOption("Hold Angle", true);
+    public static final TunableOption optHoldAngle = new TunableOption("Hold Angle", false);
     public static final TunableOption optTestAiming = new TunableOption("Test Aiming", false);
+    public static final TunableOption optSOTM = new TunableOption("Shoot on the Move", true);
+    public static final TunableOption optLoadEarly = new TunableOption("Treat as loaded early", false);
 }

@@ -1,6 +1,7 @@
 package frc.robot.superstructure;
 
 import static frc.robot.Options.optHoldX;
+import static frc.robot.Options.optLoadEarly;
 import static frc.robot.Options.optWaitForAim;
 
 import java.util.Set;
@@ -26,14 +27,16 @@ import frc.robot.subsystems.pose.Pose;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants.ShooterMode;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.vision.Vision;
 
 public class Superstructure extends SubsystemBase {
     public static final Superstructure instance = new Superstructure();
     private Shooter shooter = Shooter.getInstance();
     private Intake intake = Intake.getInstance();
     private Feeder feeder = Feeder.getInstance();
+    private Vision vision = Vision.instance;
     private final SendableChooser<ShotConfig> shotSelector = new SendableChooser<>();
-    private boolean shiftWarned = false;
+    private boolean shiftWarned = true;
     private Shift currentShift = Shift.DISABLED;
     
     public static enum SuperState {
@@ -81,6 +84,10 @@ public class Superstructure extends SubsystemBase {
     //     superState = SuperState.NONE;
     // }
 
+    public boolean automaticShot() {
+        return activeShot == ShotConfig.AUTO;
+    }
+
     public boolean hopperFull() {
         return shooter.getShotTimer() < (Constants.hopperShootingTime / 2.0);
     }
@@ -96,9 +103,15 @@ public class Superstructure extends SubsystemBase {
         return LoggedCommands.parallel("Deliver To Hub",
             shooter.Shoot(),
             intake.Pulse(),
+            vision.takeSnapshot(),
             LoggedCommands.sequence("Wait then Feed",
+                Commands.either(
+                    shooter.AdjustForLoad(),
+                    Commands.none(),
+                    optLoadEarly
+                ),
                 LoggedCommands.waitUntil("Wait for shooter ready", () -> shooter.getMode() == ShooterMode.SHOOTING),
-                LoggedCommands.waitUntil("Wait for alignment", () -> !optWaitForAim.get() || Aiming.isHubAligned()),
+                LoggedCommands.waitUntil("Wait for alignment", () -> !optWaitForAim.get() || Aiming.isVirtualHubAligned()),
                 shooter.AdjustForLoad(),
                 Commands.parallel(
                     Commands.either(
@@ -170,7 +183,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         double shiftTime = currentShift.timeLeft(matchTime);
-        if (matchTime >= 0 && !shiftWarned && shiftTime < shiftWarning && currentShift.isActive() != currentShift.isNextActive()) {
+        if (matchTime > 0 && !shiftWarned && shiftTime <= shiftWarning && currentShift.isActive() != currentShift.isNextActive()) {
             shiftWarned = true;
             CommandScheduler.getInstance().schedule(Controls.instance.Rumble());
             LED.triggerShiftWarning();

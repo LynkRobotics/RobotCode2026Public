@@ -70,8 +70,8 @@ public class Swerve extends SubsystemBase {
 
     public void drive(Translation2d translation, double rotation, boolean isOpenLoop) {
         ChassisSpeeds desiredChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
+                                    translation.getX(),
+                                    translation.getY(),
                                     rotation, 
                                     Pose.instance.getHeading()
                                 );
@@ -89,9 +89,9 @@ public class Swerve extends SubsystemBase {
 
     public void driveRobotRelative(ChassisSpeeds desiredChassisSpeeds, boolean isOpenLoop) {
         ChassisSpeeds discretizedSpeeds = ChassisSpeeds.discretize(desiredChassisSpeeds, 0.02);
-        lastSpeeds = discretizedSpeeds;
+        lastSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(discretizedSpeeds, Pose.instance.getHeading());
         
-        SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(discretizedSpeeds); 
+        SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(discretizedSpeeds, SwerveConstants.rotationCenter); 
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
         DogLog.log("Swerve/Desired Module States", swerveModuleStates);

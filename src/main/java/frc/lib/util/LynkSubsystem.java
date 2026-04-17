@@ -10,6 +10,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.LynkMotor.MotorConfig;
+import frc.robot.Constants;
 import frc.robot.Ports;
 
 public abstract class LynkSubsystem<T> extends SubsystemBase {
@@ -54,19 +55,21 @@ public abstract class LynkSubsystem<T> extends SubsystemBase {
 
         DogLog.log(name + "/Current Command", currentCommand == null ? "None" : currentCommand.getName());
 
-        motors.forEach((motorName, motor) -> {
-            String logPrefix = name + "/" + motorName + " Motor/";
-            DogLog.log(logPrefix + "Torque Current (Amps)", motor.getTorqueCurrent().getValue().in(Units.Amps));
-            DogLog.log(logPrefix + "Stator Current (Amps)", motor.getStatorCurrent().getValue().in(Units.Amps));
-            DogLog.log(logPrefix + "Supply Current (Amps)", motor.getSupplyCurrent().getValue().in(Units.Amps));
-            DogLog.log(logPrefix + "Velocity (RPS)", motor.getVelocity().getValue().in(Units.RotationsPerSecond));
-            DogLog.log(logPrefix + "Rotor Velocity (RPS)", motor.getRotorVelocity().getValue().in(Units.RotationsPerSecond));
-            DogLog.log(logPrefix + "Voltage", motor.getMotorVoltage().getValue().in(Units.Volts));
-            DogLog.log(logPrefix + "Position (rotations)", motor.getPosition().getValue().in(Units.Rotations));
-            DogLog.log(logPrefix + "Position (degrees)", motor.getPosition().getValue().in(Units.Degrees));
-            DogLog.log(logPrefix + "Temperature (C)", motor.getDeviceTemp().getValue().in(Units.Celsius));
-            DogLog.log(logPrefix + "Stalled?", motor.checkStall());
-        });
+        if (Constants.atHQ) {
+            motors.forEach((motorName, motor) -> {
+                String logPrefix = name + "/" + motorName + " Motor/";
+                DogLog.log(logPrefix + "Torque Current (Amps)", motor.getTorqueCurrent().getValue().in(Units.Amps));
+                DogLog.log(logPrefix + "Stator Current (Amps)", motor.getStatorCurrent().getValue().in(Units.Amps));
+                DogLog.log(logPrefix + "Supply Current (Amps)", motor.getSupplyCurrent().getValue().in(Units.Amps));
+                DogLog.log(logPrefix + "Velocity (RPS)", motor.getVelocity().getValue().in(Units.RotationsPerSecond));
+                DogLog.log(logPrefix + "Rotor Velocity (RPS)", motor.getRotorVelocity().getValue().in(Units.RotationsPerSecond));
+                DogLog.log(logPrefix + "Voltage", motor.getMotorVoltage().getValue().in(Units.Volts));
+                DogLog.log(logPrefix + "Position (rotations)", motor.getPosition().getValue().in(Units.Rotations));
+                DogLog.log(logPrefix + "Position (degrees)", motor.getPosition().getValue().in(Units.Degrees));
+                DogLog.log(logPrefix + "Temperature (C)", motor.getDeviceTemp().getValue().in(Units.Celsius));
+                DogLog.log(logPrefix + "Stalled?", motor.checkStall());
+            });
+        }
     }
 
     public static void globalPeriodic() {

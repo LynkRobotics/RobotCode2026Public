@@ -7,6 +7,8 @@ package frc.robot;
 import java.io.File;
 import java.nio.file.Files;
 
+import com.ctre.phoenix6.SignalLogger;
+
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.WebServer;
@@ -23,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.lib.util.Elastic;
 import frc.lib.util.LoggedCommands;
-import frc.lib.util.LynkSubsystem;
 import frc.robot.autos.Autos;
 import frc.robot.subsystems.controls.Controls;
 import frc.robot.subsystems.feeder.Feeder;
@@ -104,7 +105,9 @@ public class Robot extends TimedRobot {
         }
         SmartDashboard.putData("Field", field);
         SmartDashboard.putData(LoggedCommands.runOnce("Disable 5V Rail", () -> RobotController.setEnabled5V(false)).ignoringDisable(true));     
-        SmartDashboard.putData(LoggedCommands.runOnce("Enable 5V Rail", () -> RobotController.setEnabled5V(true)).ignoringDisable(true));     
+        SmartDashboard.putData(LoggedCommands.runOnce("Enable 5V Rail", () -> RobotController.setEnabled5V(true)).ignoringDisable(true));
+        SmartDashboard.putData(LoggedCommands.runOnce("Enable Signal Logging", SignalLogger::start).ignoringDisable(true));
+        SmartDashboard.putData(LoggedCommands.runOnce("Disable Signal Logging", SignalLogger::stop).ignoringDisable(true));
     }
 
     /**
@@ -119,7 +122,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        double commandSchedulerStart, commandSchedulerEnd;
+        double commandSchedulerStart = 0;
+        double commandSchedulerEnd = 0;
 
         // Runs the Scheduler. This is responsible for polling buttons, adding newly-scheduled
         // commands, running already-scheduled commands, removing finished or interrupted commands,
@@ -134,7 +138,7 @@ public class Robot extends TimedRobot {
                 commandSchedulerStart = Timer.getFPGATimestamp();
             }
             CommandScheduler.getInstance().run();
-            LynkSubsystem.globalPeriodic();
+            // LynkSubsystem.globalPeriodic();
             if (Constants.profileTime) {
                 commandSchedulerEnd = Timer.getFPGATimestamp();
                 DogLog.log("Misc/Loop Cycle Time (ms)", (commandSchedulerEnd - commandSchedulerStart) * 1000.0);
@@ -150,9 +154,13 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("Match Time", matchTime);
         Shift.updateDashboard(matchTime);
-        DogLog.log("Misc/FMS Match Time", DriverStation.getMatchTime());
-        DogLog.log("Misc/5V Current", RobotController.getCurrent5V());
-        DogLog.log("Misc/5V Voltage", RobotController.getVoltage5V());
+        // DogLog.log("Misc/FMS Match Time", DriverStation.getMatchTime());
+        // DogLog.log("Misc/5V Current", RobotController.getCurrent5V());
+        // DogLog.log("Misc/5V Voltage", RobotController.getVoltage5V());
+        if (Constants.profileTime) {
+            DogLog.log("Misc/Periodic Started", commandSchedulerStart);
+            DogLog.log("Misc/Periodic Ended", commandSchedulerEnd);
+        }
     }
 
     /** This function is called once each time the robot enters Disabled mode. */
@@ -167,6 +175,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        if (Constants.realtimePriority) {                
+            Threads.setCurrentThreadPriority(true, 2);
+        }            
+
         DogLog.log("Misc/Robot Status", "Auto has begun");
 
         // Ensure the Swerve subsystem doesn't run a default command, in case we previously were in teleop mode
@@ -181,11 +193,14 @@ public class Robot extends TimedRobot {
         if (autoCommand != null) {
             DogLog.log("Misc/Robot Status", "Running auto command " + autoCommand.getName());
             CommandScheduler.getInstance().schedule(autoCommand);
+            DogLog.log("Misc/Robot Status", "Auto command started");
         }
 
         if (!Constants.atHQ) {
             Elastic.selectTab("Primary");
         }
+        
+        DogLog.log("Misc/Robot Status", "Auto init completed");
     }
 
     /** This function is called periodically during autonomous. */
@@ -195,6 +210,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        if (Constants.realtimePriority) {                
+            Threads.setCurrentThreadPriority(true, 2);
+        }            
+
         DogLog.log("Misc/Robot Status", "TeleOp has begun");
 
         // Makes sure that the autonomous command stops running when teleop starts running

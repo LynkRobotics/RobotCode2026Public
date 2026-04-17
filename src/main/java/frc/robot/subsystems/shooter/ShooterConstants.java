@@ -1,8 +1,11 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import frc.lib.util.CalibrationTable;
@@ -17,6 +20,7 @@ public class ShooterConstants {
 	public static final double acceptableDeltaRPM = 40.0;
 	public static final double maxSpinUpTime = 0.30; // seconds
 	public static final Voltage reverseVoltage = Units.Volts.of(-5.0); // for unjamming
+	public static final double loadedExpiry = 5.0; // seconds of shooting to consider the shooter no longer "loaded" because fuel is slower
 
 	public enum ShooterMode {
 		STOPPED,
@@ -38,14 +42,13 @@ public class ShooterConstants {
     @SuppressWarnings("unchecked")
     private static final CalibrationTable.CalibrationValue<ShooterSetpoint>[] shootingValues =
         (CalibrationTable.CalibrationValue<ShooterSetpoint>[]) new CalibrationTable.CalibrationValue[] {
-			new CalibrationTable.CalibrationValue<>(1.70, new ShooterSetpoint(2350, 0)),
-			new CalibrationTable.CalibrationValue<>(2.30, new ShooterSetpoint(2500, 0)),
-			new CalibrationTable.CalibrationValue<>(3.06, new ShooterSetpoint(2700, 0)),
-			new CalibrationTable.CalibrationValue<>(3.46, new ShooterSetpoint(2850, 0)),
-			new CalibrationTable.CalibrationValue<>(4.405, new ShooterSetpoint(3150, 0)),
-			new CalibrationTable.CalibrationValue<>(5.14, new ShooterSetpoint(3425, 0)),
-			new CalibrationTable.CalibrationValue<>(5.68, new ShooterSetpoint(3650, 0)),
-            new CalibrationTable.CalibrationValue<>(Double.POSITIVE_INFINITY, new ShooterSetpoint(3800, 0)),
+			new CalibrationTable.CalibrationValue<>(2.11, new ShooterSetpoint(2395, 0)),
+			new CalibrationTable.CalibrationValue<>(2.99, new ShooterSetpoint(2635, 0)),
+			new CalibrationTable.CalibrationValue<>(3.60, new ShooterSetpoint(2770, 0)),
+			new CalibrationTable.CalibrationValue<>(4.00, new ShooterSetpoint(2875, 0)),
+			new CalibrationTable.CalibrationValue<>(4.49, new ShooterSetpoint(3060, 0)),
+			new CalibrationTable.CalibrationValue<>(5.00, new ShooterSetpoint(3220, 0)),
+            new CalibrationTable.CalibrationValue<>(Double.POSITIVE_INFINITY, new ShooterSetpoint(3600, 0)),
         };
     public static final CalibrationTable<ShooterSetpoint> shootingTable = new CalibrationTable<>(shootingValues);
 
@@ -57,11 +60,21 @@ public class ShooterConstants {
             new CalibrationTable.CalibrationValue<>(2.10, new ShooterSetpoint(2000, 0)),
             new CalibrationTable.CalibrationValue<>(4.13, new ShooterSetpoint(2800, 0)),
             new CalibrationTable.CalibrationValue<>(6.17, new ShooterSetpoint(3450, 0)),
-            new CalibrationTable.CalibrationValue<>(7.70, new ShooterSetpoint(4600, 0)),
-            new CalibrationTable.CalibrationValue<>(9.60, new ShooterSetpoint(5500, 0)),
+            new CalibrationTable.CalibrationValue<>(7.70, new ShooterSetpoint(4475, 0)),
+            new CalibrationTable.CalibrationValue<>(9.60, new ShooterSetpoint(5400, 0)),
             new CalibrationTable.CalibrationValue<>(Double.POSITIVE_INFINITY, new ShooterSetpoint(6000, 0)),
         };
     public static final CalibrationTable<ShooterSetpoint> passingTable = new CalibrationTable<>(passingValues);
+
+    public static final InterpolatingDoubleTreeMap distanceToToF = new InterpolatingDoubleTreeMap();
+
+	static {
+		distanceToToF.put(1.681, 0.884);
+		distanceToToF.put(2.485, (18.245-10.341)/8.0);
+		distanceToToF.put(4.00, (17.879-8.171)/8.0);
+		distanceToToF.put(5.20, (22.215-10.573)/8.0);
+		distanceToToF.put(Double.POSITIVE_INFINITY, 3.0);
+	}
 
 	public static MotorConfig getFlywheelMotorConfig() {
 		MotorConfig config = new MotorConfig();
@@ -69,24 +82,18 @@ public class ShooterConstants {
 		config.name = "Flywheel A";
 		config.port = Ports.FLYWHEEL_A;
 
-		// Unloaded config -- TODO adjust for higher RPM values, too?
-        config.talonConfig.Slot0.kP = 0.50; // 0.6 too much
+		// Unloaded config -- values from SysId
+        config.talonConfig.Slot0.kP = 0.15; // SysId == 0.075665
         config.talonConfig.Slot0.kI = 0.0;
         config.talonConfig.Slot0.kD = 0.0;
-        config.talonConfig.Slot0.kS = 0.25; // 0.25 V to overcome static friction, empirically determined
+        config.talonConfig.Slot0.kS = 0.17763;
         config.talonConfig.Slot0.kG = 0.0;
-        config.talonConfig.Slot0.kV = 1.0 / 8.35; // 1.0 V per 8.35 RPS; might run a little high at high RPS
-        config.talonConfig.Slot0.kA = 0.0;
+        config.talonConfig.Slot0.kV = 0.1281;
+        config.talonConfig.Slot0.kA = 0.018656;
 
 		// Loaded config
-        config.talonConfig.Slot1.kP = 0.60;
-        config.talonConfig.Slot1.kI = 0.0;
-        config.talonConfig.Slot1.kD = 0.0;
-        config.talonConfig.Slot1.kS = 0.73;  // Loaded requires more volts -- but much less now that floor imparts more energy
-        config.talonConfig.Slot1.kV = 0.120;
-        config.talonConfig.Slot1.kG = 0.0;
-        config.talonConfig.Slot1.kA = 0.0;
-
+        config.talonConfig.Slot1 = Slot1Configs.from(SlotConfigs.from(config.talonConfig.Slot0));
+        config.talonConfig.Slot1.kS += 0.3; // Extra baseline to help with load
 
 		// Motion Magic is used only when we adjust to idle speed
 		config.talonConfig.MotionMagic.MotionMagicAcceleration = idleRPM / 60.0 / slowRampTime;
@@ -103,7 +110,7 @@ public class ShooterConstants {
 		config.talonConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
 		config.talonConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
-		config.talonConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+		config.talonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		config.talonConfig.Feedback.SensorToMechanismRatio = gearing;
 		config.talonConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 

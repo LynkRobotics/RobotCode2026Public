@@ -63,12 +63,19 @@ public class SwerveAlign {
         return output;
     }
 
-    // TODO How to handle varying tolerances?  Pass in tolerance and compute atSetpoint manually?
     public static boolean aligned() {
         return aligned(rotationPID);
     }
 
+    public static boolean aligned(double tolerance) {
+        return aligned(rotationPID, tolerance);
+    }
+
     public static boolean aligned(PIDController pid) {
         return pid.atSetpoint();
+    }
+
+    public static boolean aligned(PIDController pid, double tolerance) {
+        return Math.abs(pid.getError()) < tolerance;
     }
 }

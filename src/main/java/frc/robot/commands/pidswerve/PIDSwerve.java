@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 
 
 public class PIDSwerve extends LoggedCommand {
@@ -23,9 +22,6 @@ public class PIDSwerve extends LoggedCommand {
     private final PIDController xPID, yPID;
     private final PIDSpeed speed;
     private final double maxVisionDiff;
-    private final Timer alignedTimer = new Timer();
-    private boolean ignoreY = false;
-    private boolean fastAlign = false;
 
     public PIDSwerve(Swerve s_Swerve, Pose s_Pose, Pose2d targetPose, boolean flipIfRed, boolean precise, PIDSpeed speed, double maxVisionDiff) {
         super();
@@ -39,7 +35,7 @@ public class PIDSwerve extends LoggedCommand {
         this.targetPose = targetPose;
         this.precise = precise;
         this.speed = speed;
-        this.maxVisionDiff = maxVisionDiff;
+        this.maxVisionDiff = maxVisionDiff; // meters
         addRequirements(s_Swerve);
 
         xPID = new PIDController(precise ? PIDSwerveConstants.translationKP : PIDSwerveConstants.roughTranslationKP, 0, 0);
@@ -72,20 +68,9 @@ public class PIDSwerve extends LoggedCommand {
         this(s_Swerve, s_Pose, targetPose, flipIfRed, precise, PIDSpeed.FAST);
     }
 
-    public PIDSwerve ignoreY() {
-        ignoreY = true;
-
-        return this;
-    }
-
-    public PIDSwerve fastAlign() {
-        fastAlign = true;
-
-        return this;
-    }
-
     private boolean isAligned() {
-        return Math.abs(xPID.getError()) <= xPID.getErrorTolerance() && (ignoreY || Math.abs(yPID.getError()) <= yPID.getErrorTolerance()) && SwerveAlign.aligned();
+        return Math.abs(xPID.getError()) <= xPID.getErrorTolerance() && Math.abs(yPID.getError()) <= yPID.getErrorTolerance() && 
+            (precise ? SwerveAlign.aligned() : SwerveAlign.aligned(PIDSwerveConstants.roughAngleTolerance));
     }
 
     @Override
@@ -97,14 +82,6 @@ public class PIDSwerve extends LoggedCommand {
 
         SwerveAlign.errorReset();
         SwerveAlign.setTarget(targetPose.getRotation());
-        // if (precise) {
-        //     rotationPID.setTolerance(PIDSwerveConstants.rotationTolerance, 10.0);
-        // } else {
-        //     rotationPID.setTolerance(PIDSwerveConstants.roughRotatationTolerance);
-        // }
-
-        alignedTimer.stop();
-        alignedTimer.reset();
 
         // Robot.field.getRobotObject().setTrajectory(targetPose);
         DogLog.log("PIDSwerve/Pose target", targetPose);
@@ -140,16 +117,6 @@ public class PIDSwerve extends LoggedCommand {
         DogLog.log("PIDSwerve/Rot position", rotation.getDegrees());
         DogLog.log("PIDSwerve/Rot value", rotationVal);
 
-        if (isAligned()) {
-            if (!alignedTimer.isRunning()) {
-                alignedTimer.restart();
-            }
-        } else if (alignedTimer.isRunning()) {
-            alignedTimer.stop();
-            alignedTimer.reset();
-        }
-        DogLog.log("PIDSwerve/Aligned time", alignedTimer.get());
-
         /* Drive */
         s_Swerve.drive(
             // TODO Automatically go in turbo mode?
@@ -162,7 +129,7 @@ public class PIDSwerve extends LoggedCommand {
 
     @Override
     public boolean isFinished() {
-        return ((xPID.atSetpoint() && (ignoreY || yPID.atSetpoint()) && SwerveAlign.aligned()) || alignedTimer.get() >= (fastAlign ? PIDSwerveConstants.fastAlignedTimerMax : PIDSwerveConstants.alignedTimerMax)) && s_Pose.visionDifference() <= maxVisionDiff;
+        return isAligned() && Pose.instance.visionDifference() < maxVisionDiff;
     }
 
     @Override
