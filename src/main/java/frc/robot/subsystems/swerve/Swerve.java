@@ -268,15 +268,18 @@ public class Swerve extends SubsystemBase {
         Command currentCommand = getCurrentCommand();
         DogLog.log("Swerve/Current Command", currentCommand == null ? "None" : currentCommand.getName());
 
-        boolean aligned = true;
-        for(SwerveModule mod : mSwerveMods) {
-            DogLog.log("Swerve/Mod/" + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-            SmartDashboard.putNumber("Swerve/Mod/" + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-            SmartDashboard.putNumber("Swerve/Mod/" + mod.moduleNumber + " Alignment Error", mod.alignmentError());
-            SmartDashboard.putBoolean("Swerve/Mod/" + mod.moduleNumber + " Aligned", mod.isAligned());
-            aligned = aligned && mod.isAligned();
+        if (Constants.fullDashboard) {
+            boolean aligned = true;
+            for(SwerveModule mod : mSwerveMods) {
+                DogLog.log("Swerve/Mod/" + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
+                SmartDashboard.putNumber("Swerve/Mod/" + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
+                SmartDashboard.putNumber("Swerve/Mod/" + mod.moduleNumber + " Alignment Error", mod.alignmentError());
+                SmartDashboard.putBoolean("Swerve/Mod/" + mod.moduleNumber + " Aligned", mod.isAligned());
+                aligned = aligned && mod.isAligned();
+            }
+            SmartDashboard.putBoolean("Swerve/Modules Aligned", aligned);
         }
-        SmartDashboard.putBoolean("Swerve/Modules Aligned", aligned);
+
         DogLog.log("Swerve/Actual Module States", getModuleStates());        
     }
 }

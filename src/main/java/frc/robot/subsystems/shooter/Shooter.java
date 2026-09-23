@@ -17,9 +17,9 @@ import frc.lib.util.LoggedCommands;
 import frc.lib.util.LynkMotor;
 import frc.lib.util.LynkSubsystem;
 import frc.robot.Aiming;
+import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.subsystems.controls.ControlsConstants;
-import frc.robot.subsystems.pose.Pose;
 import frc.robot.subsystems.shooter.ShooterConstants.ShooterMode;
 
 public class Shooter extends LynkSubsystem<Shooter> {
@@ -76,11 +76,13 @@ public class Shooter extends LynkSubsystem<Shooter> {
 
         // kickerMotor.stopMotor(); // TODO Stall to find zero
 
-        SmartDashboard.putData("Stop", LoggedCommands.runOnce("Stop", this::stop));
-        SmartDashboard.putNumber("Direct Voltage", 0);
-        SmartDashboard.putData("Set Voltage", LoggedCommands.runOnce("Set Voltage", () -> flywheelMotorA.setControl(flywheelVoltage.withOutput(SmartDashboard.getNumber("Direct Voltage", 0)))));
-        SmartDashboard.putNumber("Direct RPM", 0);
-        SmartDashboard.putData("Set RPM", LoggedCommands.runOnce("Set RPM", () -> setTargetRPM(SmartDashboard.getNumber("Direct RPM", 0))));
+        if (Constants.fullDashboard) {
+            SmartDashboard.putData("Stop", LoggedCommands.runOnce("Stop", this::stop));
+            SmartDashboard.putNumber("Direct Voltage", 0);
+            SmartDashboard.putData("Set Voltage", LoggedCommands.runOnce("Set Voltage", () -> flywheelMotorA.setControl(flywheelVoltage.withOutput(SmartDashboard.getNumber("Direct Voltage", 0)))));
+            SmartDashboard.putNumber("Direct RPM", 0);
+            SmartDashboard.putData("Set RPM", LoggedCommands.runOnce("Set RPM", () -> setTargetRPM(SmartDashboard.getNumber("Direct RPM", 0))));
+        }
 
         /* SysId routine for characterizing flywheel control */
         sysIdRoutine = new SysIdRoutine(
@@ -128,7 +130,7 @@ public class Shooter extends LynkSubsystem<Shooter> {
     }
 
     public void pass() {
-        shoot(Pose.instance.passDistance(), ShooterMode.PASSING);
+        shoot(Aiming.virtualPassDistance(), ShooterMode.PASSING);
     }
 
     public void shoot() {
@@ -151,6 +153,8 @@ public class Shooter extends LynkSubsystem<Shooter> {
                 return;
             }
             shooterRPM = setpoint.flywheelRPM();
+            double shooterRPMAdjustment = SmartDashboard.getNumber("Shooter RPM Adjustment", Constants.shooterRPMAdjustmentDefault);
+            shooterRPM *= shooterRPMAdjustment;
         }
 
         setTargetRPM(shooterRPM);
@@ -243,13 +247,17 @@ public class Shooter extends LynkSubsystem<Shooter> {
     public void periodic() {
         super.periodic();
 
+        boolean atSpeed = atSpeed();
+        boolean nearSpeed = nearSpeed();
+        double shotTimerVal = shotTimer.get();
+
         if (shooterMode == ShooterMode.SPINNING) {
             assert(pendingMode != null) : "Pending mode should not be null when spinning up";
-            if (atSpeed() || (pendingMode == ShooterMode.PASSING && nearPassingSpeed())) {
+            if (atSpeed || (pendingMode == ShooterMode.PASSING && nearPassingSpeed())) {
                 shooterMode = pendingMode;
                 pendingMode = null;
                 spinupTimer.stop();
-            } else if (nearSpeed()) {
+            } else if (nearSpeed) {
                 // TODO Add timeout to prevent getting stuck in SPINNING mode
                 if (spinupTimer.isRunning()) {
                     if (spinupTimer.hasElapsed(ShooterConstants.maxSpinUpTime)) {
@@ -264,18 +272,18 @@ public class Shooter extends LynkSubsystem<Shooter> {
             }
         }
 
-        if (loaded && shotTimer.isRunning() && shooterMode == ShooterMode.SHOOTING && shotTimer.get() >= ShooterConstants.loadedExpiry) {
+        if (loaded && shotTimer.isRunning() && shooterMode == ShooterMode.SHOOTING && shotTimerVal >= ShooterConstants.loadedExpiry) {
             loaded = false;
         }
 
-        DogLog.log(name + "/Target RPM", targetRPM);
+        // DogLog.log(name + "/Target RPM", targetRPM);
         DogLog.log(name + "/Target RPS", targetRPM / 60.0);
-        DogLog.log(name + "/Current RPM", flywheelMotorA.getVelocity().getValue().in(Units.RPM));
+        // DogLog.log(name + "/Current RPM", flywheelMotorA.getVelocity().getValue().in(Units.RPM));
         DogLog.log(name + "/Mode", shooterMode);
         DogLog.log(name + "/Spinup Timeouts", spinupTimeoutCount);
-        DogLog.log(name + "/Shot Timer", getShotTimer());
+        DogLog.log(name + "/Shot Timer", shotTimerVal);
         DogLog.log(name + "/Loaded", loaded);
-        SmartDashboard.putBoolean(name + "/Near Speed", nearSpeed());
-        SmartDashboard.putBoolean(name + "/At Speed", atSpeed());
+        DogLog.log(name + "/Near Speed", nearSpeed);
+        DogLog.log(name + "/At Speed", atSpeed);
     }
 }

@@ -20,7 +20,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.swerve.Swerve;
@@ -53,6 +52,9 @@ public class Pose extends SubsystemBase {
     private Zone trenchEnterZone = zone; // The zone the robot was in when it entered the trench run
     private TrenchStatus trenchStatus = TrenchStatus.IN_RUN;
     private boolean odometryReliable = true;
+    private int tiltCounter = 0;
+    private boolean countTilts = true;
+    private boolean lastLevel = true;
 
     public Pose() {
         gyro = new Pigeon2(Ports.PIGEON.id, Ports.PIGEON.bus);
@@ -244,6 +246,10 @@ public class Pose extends SubsystemBase {
         return gyro.getGravityVectorZ().getValue() > 0.985;
     }
 
+    public void setCountTilts(boolean value) {
+        countTilts = value;
+    }
+
     public Command StayLevel() {
         return LoggedCommands.waitUntil("Stay Level", () -> !this.isLevel());
     }
@@ -288,10 +294,28 @@ public class Pose extends SubsystemBase {
         }
     }
 
+    public void resetTilt() {
+        tiltCounter = 0;
+    }
+
+    public boolean wasTilted() {
+        return tiltCounter > 0;
+    }
+
     @Override
     public void periodic() {
         SwerveModulePosition[] modulePositions = Swerve.instance.getModulePositions();
-        DogLog.log("Pose/Level", isLevel());
+        boolean isLevel = isLevel();
+        if (isLevel != lastLevel) {
+            if (!isLevel) {
+                if (countTilts) {
+                    tiltCounter++;
+                }
+            }
+            lastLevel = isLevel;
+        }
+
+        DogLog.log("Pose/Level", isLevel);
         odometryReliable = isLevel(); // If the robot is not level, we cannot trust the odometry because the wheels may be slipping, so we will not update the pose estimator with the module positions to prevent it from thinking we have moved when we are tilted
         DogLog.log("Pose/Odometry Reliable", odometryReliable);
         // TODO Fix this -- setting to 0 resets the position
@@ -339,7 +363,6 @@ public class Pose extends SubsystemBase {
         DogLog.log("Pose/Gyro/Raw Yaw", getGyroYaw());
         DogLog.log("Pose/Hub Pose", hubCenter());
         DogLog.log("Pose/Hub Distance", hubDistance(position));
-        SmartDashboard.putNumber("Pose/Hub Distance", hubDistance(position));
 
         Aiming.logAll();
     }

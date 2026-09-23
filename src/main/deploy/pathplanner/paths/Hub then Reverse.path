@@ -1,0 +1,193 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.25,
+        "y": 0.6
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.5559997986403062,
+        "y": 0.6498783114827531
+      },
+      "isLocked": true,
+      "linkedName": "Prep"
+    },
+    {
+      "anchor": {
+        "x": 5.6,
+        "y": 0.6
+      },
+      "prevControl": {
+        "x": 5.326342927405507,
+        "y": 0.5285952281369969
+      },
+      "nextControl": {
+        "x": 6.231784633702317,
+        "y": 0.7648502529401572
+      },
+      "isLocked": true,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.8,
+        "y": 1.7989403973509934
+      },
+      "prevControl": {
+        "x": 5.897879680397298,
+        "y": 1.3498589747226628
+      },
+      "nextControl": {
+        "x": 5.672496716214583,
+        "y": 2.383937772084133
+      },
+      "isLocked": true,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.9,
+        "y": 5.5
+      },
+      "prevControl": {
+        "x": 5.682399386539635,
+        "y": 5.019220421207854
+      },
+      "nextControl": {
+        "x": 6.018912399430137,
+        "y": 5.7627320410638365
+      },
+      "isLocked": true,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.8,
+        "y": 2.6
+      },
+      "prevControl": {
+        "x": 6.491278683316843,
+        "y": 3.0634271873379055
+      },
+      "nextControl": {
+        "x": 5.3846901665992135,
+        "y": 2.3215799176054084
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.25,
+        "y": 2.6
+      },
+      "prevControl": {
+        "x": 3.8014142909224224,
+        "y": 2.3626163430065326
+      },
+      "nextControl": {
+        "x": 2.34070701747916,
+        "y": 2.9914503070063914
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.9,
+        "y": 4.020480132450331
+      },
+      "prevControl": {
+        "x": 2.243039634766461,
+        "y": 3.643196466606763
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Center Shot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 14.999999999999998
+    },
+    {
+      "waypointRelativePos": 1.7000000000000002,
+      "rotationDegrees": 100.0
+    },
+    {
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": 82.0
+    },
+    {
+      "waypointRelativePos": 4.0,
+      "rotationDegrees": 59.99999999999999
+    },
+    {
+      "waypointRelativePos": 5.0,
+      "rotationDegrees": 59.99999999999999
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.4,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 1.6,
+        "maxAcceleration": 5.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 1080.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 4.0,
+      "maxWaypointRelativePos": 4.8,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 6.0,
+        "maxAngularVelocity": 90.0,
+        "maxAngularAcceleration": 1080.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Before Bump",
+      "waypointRelativePos": 3.8,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 1080.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": false
+}

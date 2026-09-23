@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,7 +48,6 @@ import frc.robot.superstructure.Superstructure;
 public class Robot extends TimedRobot {
     public static final CTREConfigs ctreConfigs = new CTREConfigs();
     public static final Field2d field = new Field2d();
-    // public static final SendableChooser<String> fieldSelector = new SendableChooser<>();
 
     private Command autoCommand;
 
@@ -57,6 +57,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        LiveWindow.disableAllTelemetry();
+
         RobotController.setBrownoutVoltage(5.5); //6328 uses 6, 1678 uses 5.5, 5.9 works
         // Serve up deployed files for Elastic dashboard
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
@@ -70,6 +72,8 @@ public class Robot extends TimedRobot {
                 .withLogExtras(true)
                 .withNtPublish(true));
 
+        DogLog.setEnabled(Constants.loggingEnabled);
+        
         DogLog.log("Misc/RIO Serial Number", RobotController.getSerialNumber());
 
         File deployDir = Filesystem.getDeployDirectory();
@@ -100,14 +104,14 @@ public class Robot extends TimedRobot {
         Controls.instance.configureButtonBindings();
 
         DogLog.log("Misc/Robot Status", "Robot has Started");
-        if (Constants.fullDashboard) {
-            // SmartDashboard.putData("Field Selector", fieldSelector);
-        }
         SmartDashboard.putData("Field", field);
-        SmartDashboard.putData(LoggedCommands.runOnce("Disable 5V Rail", () -> RobotController.setEnabled5V(false)).ignoringDisable(true));     
-        SmartDashboard.putData(LoggedCommands.runOnce("Enable 5V Rail", () -> RobotController.setEnabled5V(true)).ignoringDisable(true));
-        SmartDashboard.putData(LoggedCommands.runOnce("Enable Signal Logging", SignalLogger::start).ignoringDisable(true));
-        SmartDashboard.putData(LoggedCommands.runOnce("Disable Signal Logging", SignalLogger::stop).ignoringDisable(true));
+
+        if (Constants.fullDashboard) {
+            SmartDashboard.putData(LoggedCommands.runOnce("Disable 5V Rail", () -> RobotController.setEnabled5V(false)).ignoringDisable(true));     
+            SmartDashboard.putData(LoggedCommands.runOnce("Enable 5V Rail", () -> RobotController.setEnabled5V(true)).ignoringDisable(true));
+            SmartDashboard.putData(LoggedCommands.runOnce("Enable Signal Logging", SignalLogger::start).ignoringDisable(true));
+            SmartDashboard.putData(LoggedCommands.runOnce("Disable Signal Logging", SignalLogger::stop).ignoringDisable(true));
+        }
     }
 
     /**
@@ -152,11 +156,14 @@ public class Robot extends TimedRobot {
 
         double matchTime = DriverStation.getMatchTime();
 
-        SmartDashboard.putNumber("Match Time", matchTime);
+        DogLog.log("Misc/FMS Match Time", DriverStation.getMatchTime());
         Shift.updateDashboard(matchTime);
-        // DogLog.log("Misc/FMS Match Time", DriverStation.getMatchTime());
-        // DogLog.log("Misc/5V Current", RobotController.getCurrent5V());
-        // DogLog.log("Misc/5V Voltage", RobotController.getVoltage5V());
+        
+        if (Constants.fullDashboard) {
+            DogLog.log("Misc/5V Current", RobotController.getCurrent5V());
+            DogLog.log("Misc/5V Voltage", RobotController.getVoltage5V());
+        }
+
         if (Constants.profileTime) {
             DogLog.log("Misc/Periodic Started", commandSchedulerStart);
             DogLog.log("Misc/Periodic Ended", commandSchedulerEnd);
@@ -220,6 +227,9 @@ public class Robot extends TimedRobot {
         if (autoCommand != null) {
             autoCommand.cancel();
         }
+
+        // Check if anything should start based on current state of controls -- buttons might have been mashed early
+        Controls.instance.teleopInit();
 
         // Run the TeleOp Swerve command by default
         Swerve swerve = Swerve.instance;

@@ -7,7 +7,6 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -122,9 +121,9 @@ public class Intake extends LynkSubsystem<Intake> {
                     }
                 }
             }
-            SmartDashboard.putBoolean("Intake Current Warning", true);
+            DogLog.log(name + "/Current Warning", true);
         } else {
-            SmartDashboard.putBoolean("Intake Current Warning", false);
+            DogLog.log(name + "/Current Warning", false);
             if (currentDiffTimer.isRunning()) {
                 currentDiffTimer.stop();
                 currentDiffTimer.reset();

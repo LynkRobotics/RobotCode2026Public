@@ -66,7 +66,7 @@ public class TeleopSwerve extends LoggedCommand {
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
  
         // TODO Get *every* time?
-        double teleOpMult = SmartDashboard.getNumber("TeleOp Speed Governor", 1.0);
+        double teleOpMult = SmartDashboard.getNumber("TeleOp Speed Governor", Constants.teleopDriveSpeedLimit);
         double driveLimit = (Shooter.getInstance().getMode() == ShooterMode.SHOOTING) ? sotmSpeedLimit : 1.0; // TODO Use speed limit supplier instead
  
         // Use exponential controls

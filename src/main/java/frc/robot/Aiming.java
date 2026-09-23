@@ -2,7 +2,9 @@ package frc.robot;
 
 import static frc.robot.Options.optAutoAiming;
 import static frc.robot.Options.optSOTM;
+import static frc.robot.Options.optPOTM;
 import static frc.robot.Options.optTestAiming;
+import static frc.robot.Options.optTrenchAlign;
 
 import java.util.Optional;
 
@@ -31,12 +33,16 @@ public class Aiming {
     public static final Intake intakeSystem = Intake.getInstance();
     private static PassTarget passTarget = PassTarget.CORNER;
     private static final double shootingAlignmentTolerance = Units.inchesToMeters(5.0);
+    private static final double stopShootingAlignmentTolerance = Units.inchesToMeters(12.0);
     private static final double passingAlignmentTolerance = Units.inchesToMeters(18.0);
     // private static final double shootingAlignmentToleranceFixed = 1.0; // degrees;
     private static final double passingAlignmentToleranceFixed = 2.0; // degrees;
 
     public static final double maxSOTMInterations = 3;
     public static final double convergenceTolerance = Units.inchesToMeters(1.5);
+    public static final double passingConvergenceTolerance = Units.inchesToMeters(6.0);
+    public static final double fudgeFactorSOTM = 0.70;
+    public static final double fudgeFactorPOTM = 0.45;
 
     public static double tolerance(double distance, double maxError) {
         double tolerance = Math.toDegrees(2 * Math.asin(maxError / (2 * distance)));
@@ -47,6 +53,10 @@ public class Aiming {
 
     public static double shootingTolerance(double distance) {
         return tolerance(distance, shootingAlignmentTolerance);
+    }
+
+    public static double stopShootingTolerance(double distance) {
+        return tolerance(distance, stopShootingAlignmentTolerance);
     }
 
     public static double passingTolerance(double distance) {
@@ -73,8 +83,7 @@ public class Aiming {
 
             // 2. Look up the estimated time of flight for this distance
             double timeOfFlight = ShooterConstants.distanceToToF.get(distanceToVirtualTarget);
-            double fudgeFactor = 0.65;
-            timeOfFlight *= fudgeFactor;
+            timeOfFlight *= fudgeFactorSOTM;
 
             // 3. Create a vector representing the robot's movement during the shot's flight
             Translation2d robotMovementDuringFlight = new Translation2d(movement.getX() * timeOfFlight, movement.getY() * timeOfFlight);
@@ -108,6 +117,10 @@ public class Aiming {
         return virtualHubDistance(poseSystem.getPose().getTranslation());
     }
 
+    public static double virtualPassDistance() {
+        return poseSystem.getPose().getTranslation().getDistance(passingLocation());
+    }
+
     public static Translation2d hubLocation() {
         return Pose.hubCenter();
     }
@@ -132,15 +145,34 @@ public class Aiming {
         return isHubAligned(poseSystem.getPose());
     }
 
+    public static boolean isHubUnaligned() {
+        return isHubUnaligned(poseSystem.getPose());
+    }
+
+    private static double hubAngleTolerance(Pose2d pose) {
+        return Math.abs(hubAngle(pose.getTranslation()).minus(pose.getRotation()).getDegrees());
+    }
+
     public static boolean isHubAligned(Pose2d pose) {
         double distance = pose.getTranslation().getDistance(hubLocation());
         double tolerance = shootingTolerance(distance);
 
-        return Math.abs(hubAngle(pose.getTranslation()).minus(pose.getRotation()).getDegrees()) < tolerance;
+        return hubAngleTolerance(pose) < tolerance;
+    }
+
+    public static boolean isHubUnaligned(Pose2d pose) {
+        double distance = pose.getTranslation().getDistance(hubLocation());
+        double tolerance = stopShootingTolerance(distance);
+
+        return hubAngleTolerance(pose) > tolerance;
     }
 
     public static boolean isVirtualHubAligned() {
         return isVirtualHubAligned(poseSystem.getPose());
+    }
+
+    public static boolean isVirtualHubUnaligned() {
+        return isVirtualHubUnaligned(poseSystem.getPose());
     }
 
     public static boolean isVirtualHubAligned(Pose2d pose) {
@@ -150,12 +182,31 @@ public class Aiming {
         return isVirtualHubAligned(pose, target);
     }
 
+    public static boolean isVirtualHubUnaligned(Pose2d pose) {
+        Translation2d position = pose.getTranslation();
+        Translation2d target = virtualHubLocation(position);
+
+        return isVirtualHubUnaligned(pose, target);
+    }
+
+    private static double targetAngleTolerance(Translation2d position, Rotation2d rotation, Translation2d target) {
+        return Math.abs(Pose.bearing(position, target).minus(rotation).getDegrees());
+    }
+
     public static boolean isVirtualHubAligned(Pose2d pose, Translation2d target) {
         Translation2d position = pose.getTranslation();
         double distance = position.getDistance(target);
         double tolerance = shootingTolerance(distance);
 
-        return Math.abs(Pose.bearing(position, target).minus(pose.getRotation()).getDegrees()) < tolerance;
+        return targetAngleTolerance(position, pose.getRotation(), target) < tolerance;
+    }
+
+    public static boolean isVirtualHubUnaligned(Pose2d pose, Translation2d target) {
+        Translation2d position = pose.getTranslation();
+        double distance = position.getDistance(target);
+        double tolerance = stopShootingTolerance(distance);
+
+        return targetAngleTolerance(position, pose.getRotation(), target) > tolerance;
     }
 
     public static boolean isPassAligned() {
@@ -167,7 +218,6 @@ public class Aiming {
     }
 
     public static boolean isPassAligned(Rotation2d rotation, Rotation2d bearing) {
-
         // TODO Call passingTolerance()
         return Math.abs(rotation.minus(bearing).getDegrees()) < passingAlignmentToleranceFixed;
     }
@@ -191,7 +241,41 @@ public class Aiming {
             position = new Translation2d(position.getMeasureX(), Field.width.minus(position.getMeasureY()));
         }
 
-        return Pose.flipIfRed(position);
+        position = Pose.flipIfRed(position);
+
+        if (optPOTM.get()) {
+            // NOTE: Code duplicated from getVirtualTarget()
+
+            Translation2d movement = Swerve.instance.direction();
+            Translation2d virtualTarget = position;
+            Translation2d lastTarget;
+
+            // Run the calculation iteratively 3 times to converge on the exact target
+            for (int i = 0; i < maxSOTMInterations; i++) {
+                // 1. Find distance to the CURRENT estimate of the virtual target
+                double distanceToVirtualTarget = position.getDistance(virtualTarget);
+
+                // 2. Look up the estimated time of flight for this distance
+                double timeOfFlight = ShooterConstants.distanceToPassingToF.get(distanceToVirtualTarget);
+                timeOfFlight *= fudgeFactorPOTM;
+
+                // 3. Create a vector representing the robot's movement during the shot's flight
+                Translation2d robotMovementDuringFlight = new Translation2d(movement.getX() * timeOfFlight, movement.getY() * timeOfFlight);
+
+                // 4. Subtract the robot's movement from the REAL target location
+                lastTarget = virtualTarget;
+                virtualTarget = position.minus(robotMovementDuringFlight);
+
+                // Abort if we're close enough to converging
+                if (Math.abs(virtualTarget.getX() - lastTarget.getX()) < passingConvergenceTolerance && Math.abs(virtualTarget.getY() - lastTarget.getY()) < passingConvergenceTolerance) {
+                    break;
+                }
+            }
+
+            position = virtualTarget;
+        }
+
+        return position;
     }
 
     public static Rotation2d bumpAngle() {
@@ -235,7 +319,7 @@ public class Aiming {
 
         boolean autoAim = (Shooter.getInstance().isActive() && Superstructure.instance.automaticShot());
 
-        if (!autoAim && poseSystem.getTrenchStatus() == TrenchStatus.IN_RUN && optAutoAiming.get()) {
+        if (!autoAim && poseSystem.getTrenchStatus() == TrenchStatus.IN_RUN && optAutoAiming.get() && optTrenchAlign.get()) {
             return Optional.of(trenchAngle());
         }
 
@@ -248,7 +332,7 @@ public class Aiming {
             Translation2d position = poseSystem.getPose().getTranslation();
 
             if (zone == Zone.REMOTE) {
-                return Optional.of(Pose.bearing(position, getVirtualTarget(passingLocation(), position)));
+                return Optional.of(Pose.bearing(position, passingLocation()));
             }
             return Optional.of(virtualHubAngle(position));
         }
@@ -261,8 +345,12 @@ public class Aiming {
         return Optional.of(hubAngle());
     }
 
+    public static final Optional<Rotation2d> aimAtVirtualHub() {
+        // NOTE: Presumes no robot movement, so only use if stationary or for testing
+        return Optional.of(virtualHubAngle());
+    }
+
     public static void logAll() {
-        FieldSide fieldSide = poseSystem.getFieldSide();
         Optional<Rotation2d> autoAim = autoAim();
         Pose2d pose = poseSystem.getPose();
         Translation2d position = pose.getTranslation();
@@ -271,17 +359,19 @@ public class Aiming {
         DogLog.log("Aiming/Pass target position", passingLocation());
         DogLog.log("Aiming/Pass target distance", position.getDistance(passingLocation()));
         DogLog.log("Aiming/Pass Aligned", isPassAligned());
-        DogLog.log("Aiming/Corner target", passingLocation(PassTarget.CORNER, fieldSide));
-        DogLog.log("Aiming/Trench target", passingLocation(PassTarget.TRENCH, fieldSide));
-        DogLog.log("Aiming/Middle target", passingLocation(PassTarget.MIDDLE, fieldSide));
         DogLog.log("Aiming/Auto angle", autoAim.isPresent() ? autoAim.get().getDegrees() : -999);
         DogLog.log("Aiming/Real Hub Angle", hubAngle(position).getDegrees());
+
+        // FieldSide fieldSide = poseSystem.getFieldSide();
+        // DogLog.log("Aiming/Corner target", passingLocation(PassTarget.CORNER, fieldSide));
+        // DogLog.log("Aiming/Trench target", passingLocation(PassTarget.TRENCH, fieldSide));
+        // DogLog.log("Aiming/Middle target", passingLocation(PassTarget.MIDDLE, fieldSide));
 
         Translation2d virtualHub = virtualHubLocation();
         DogLog.log("Aiming/Virtual Hub Location", virtualHub);
         DogLog.log("Aiming/Virtual Hub Angle", virtualHubAngle(position).getDegrees());
         DogLog.log("Aiming/Virtual Hub Aligned", isVirtualHubAligned(pose, virtualHub));
-
-        SmartDashboard.putString("Aiming/Pass target", passTarget.toString());
+        DogLog.log("Aiming/Virtual Hub Unaligned", isVirtualHubUnaligned(pose, virtualHub));
+        DogLog.log("Aiming/Pose Angle", pose.getRotation().getDegrees());
     }
 }

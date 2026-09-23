@@ -24,8 +24,8 @@
         "y": 0.5020321674441872
       },
       "nextControl": {
-        "x": 9.08612141499869,
-        "y": 1.8590859881657813
+        "x": 8.642671933544491,
+        "y": 1.509529889681805
       },
       "isLocked": true,
       "linkedName": null
@@ -36,14 +36,14 @@
         "y": 7.0
       },
       "prevControl": {
-        "x": 9.060443570678244,
-        "y": 6.413390890242643
+        "x": 8.773831628421297,
+        "y": 6.6679609757997085
       },
       "nextControl": {
         "x": 8.118347216698789,
         "y": 7.250165337067831
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -59,7 +59,7 @@
         "x": 6.523297673990407,
         "y": 5.475313585947515
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -75,7 +75,7 @@
         "x": 7.243837306767099,
         "y": 3.011451305624992
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -91,7 +91,7 @@
         "x": 5.218048674922674,
         "y": 2.5
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -104,7 +104,7 @@
         "y": 2.3
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Bump - Shooting"
     }
   ],
@@ -176,7 +176,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Before Bump",
+      "waypointRelativePos": 4.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.4,
     "maxAcceleration": 11.0,
@@ -187,7 +194,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.0
+    "rotation": 45.0
   },
   "reversed": false,
   "folder": null,

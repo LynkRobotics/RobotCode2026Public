@@ -19,7 +19,8 @@ public final class AutoConstants {
     public static final double maxSetupXError = Units.Inches.of(4.0).in(Units.Meters);
     public static final double maxSetupYError = Units.Inches.of(8.0).in(Units.Meters);
     public static final double maxSetupDegError = 15.0;
-    public static final double quickShootingTime = Constants.hopperShootingTime - 0.40;
+    public static final double quickShootingTime = Constants.hopperShootingTime - 0.40; // how long to wait to empty second hopper
+    public static final double firstShootingTime = quickShootingTime - 0.70; // how long to wait to empty first hopper
     public static final Translation2d pathShortening = new Translation2d(Units.Meters.of(0.0), Units.Meters.of(1.1));
     public static final LinearVelocity slowIntakeMaxVel = Units.MetersPerSecond.of(1.1);
     public static final LinearVelocity slowSweepMaxVel = Units.MetersPerSecond.of(1.5);
@@ -41,7 +42,7 @@ public final class AutoConstants {
         public enum FuelIntakeDepth { FULL, SHORT };
         public enum IntakeSpeed { DEFAULT, SLOW };
         public enum CrossingPoints { BUMP, TRENCH };
-        public enum SweepType { BUMP, TRENCH, NARROW };
+        public enum SweepType { SHORT, LONG, NARROW, P, TRENCH };
     }
     
     // TODO Find out why this doesn't work

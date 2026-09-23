@@ -11,7 +11,7 @@
         "x": 6.350552194395399,
         "y": 3.3393171640440564
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Center - Near"
     },
     {
@@ -27,7 +27,7 @@
         "x": 5.160307379214091,
         "y": 2.257979856674331
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -43,7 +43,7 @@
         "x": 4.35,
         "y": 2.3
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -56,7 +56,7 @@
         "y": 2.3
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Bump - Shooting"
     }
   ],
@@ -86,7 +86,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Before Bump",
+      "waypointRelativePos": 0.7,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 7.0,
@@ -97,7 +104,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.0
+    "rotation": 45.0
   },
   "reversed": false,
   "folder": "Return",

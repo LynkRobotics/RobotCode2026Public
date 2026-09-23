@@ -43,7 +43,7 @@
         "x": 8.00417713367036,
         "y": 7.361822561663875
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -59,7 +59,7 @@
         "x": 6.570887999893193,
         "y": 5.13044350774633
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -75,7 +75,7 @@
         "x": 7.258593979426567,
         "y": 2.7995558905419995
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -91,7 +91,7 @@
         "x": 5.506800558444217,
         "y": 2.2728784577879324
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -104,7 +104,7 @@
         "y": 2.3
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     }
   ],
@@ -168,7 +168,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Before Bump",
+      "waypointRelativePos": 4.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.4,
     "maxAcceleration": 12.0,

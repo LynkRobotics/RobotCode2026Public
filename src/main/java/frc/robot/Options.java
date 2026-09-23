@@ -8,6 +8,7 @@ public final class Options {
     public static final TunableOption optUseTrigVision = new TunableOption("Use Trig Vision", false);
     public static final TunableOption optMirrorAuto = new TunableOption("Mirror Auto to Left", false);
     public static final TunableOption optAutoAiming = new TunableOption("Automatically Aim", true);
+    public static final TunableOption optTrenchAlign = new TunableOption("Trench Alignment", false);
     public static final TunableOption optWaitForAim = new TunableOption("Wait for Aim", true);
     public static final TunableOption optPacManMode = new TunableOption("Pac-Man Mode", false);
     public static final TunableOption optHubActive = new TunableOption("Hub Active (Testing)", true);
@@ -16,5 +17,6 @@ public final class Options {
     public static final TunableOption optHoldAngle = new TunableOption("Hold Angle", false);
     public static final TunableOption optTestAiming = new TunableOption("Test Aiming", false);
     public static final TunableOption optSOTM = new TunableOption("Shoot on the Move", true);
-    public static final TunableOption optLoadEarly = new TunableOption("Treat as loaded early", false);
+    public static final TunableOption optPOTM = new TunableOption("Pass on the Move", false);
+    public static final TunableOption optLoadEarly = new TunableOption("Treat as loaded early", true);
 }

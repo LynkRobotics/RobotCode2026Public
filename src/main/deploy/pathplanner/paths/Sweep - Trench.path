@@ -41,7 +41,7 @@
       },
       "nextControl": {
         "x": 6.552565954230137,
-        "y": 0.8984879050518889
+        "y": 0.898487905051889
       },
       "isLocked": false,
       "linkedName": "RT Clear"
@@ -121,7 +121,7 @@
       },
       "nextControl": {
         "x": 5.627871636261562,
-        "y": 0.5852873589228961
+        "y": 0.585287358922896
       },
       "isLocked": false,
       "linkedName": null
@@ -247,13 +247,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 65.0
   },
   "reversed": false,
   "folder": "Sweep",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 65.0
   },
   "useDefaultConstraints": false
 }

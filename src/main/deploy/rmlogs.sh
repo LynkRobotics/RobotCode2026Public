@@ -1,0 +1,1 @@
+ssh -l lvuser 10.94.96.2 'rm -rf logs/*' && ssh photon@10.94.96.11 'sudo rm /opt/photonvision/photonvision_config/imgSaves/*/*.jpg' && ssh photon@10.94.96.13 'sudo rm /opt/photonvision/photonvision_config/imgSaves/*/*.jpg'

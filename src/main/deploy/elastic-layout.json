@@ -27,26 +27,11 @@
             "height": 224.0,
             "type": "Match Time",
             "properties": {
-              "topic": "/SmartDashboard/Match Time",
+              "topic": "/Robot/Misc/Match Time",
               "period": 0.06,
-              "data_type": "double",
               "time_display_mode": "Minutes and Seconds",
               "red_start_time": 15,
               "yellow_start_time": 30
-            }
-          },
-          {
-            "title": "Reset heading",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/Reset heading (Logged)",
-              "period": 0.06,
-              "show_type": true,
-              "maximize_button_space": false
             }
           },
           {
@@ -72,13 +57,13 @@
           },
           {
             "title": "New vision result",
-            "x": 512.0,
+            "x": 480.0,
             "y": 0.0,
             "width": 160.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/Vision/Have Pose",
+              "topic": "/Robot/Vision/Have Pose",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -95,7 +80,7 @@
             "height": 128.0,
             "type": "Number Slider",
             "properties": {
-              "topic": "/SmartDashboard/Pose/Hub Distance",
+              "topic": "/Robot/Pose/Hub Distance",
               "period": 0.06,
               "data_type": "double",
               "min_value": 0.0,
@@ -106,7 +91,7 @@
           },
           {
             "title": "Automatically Aim",
-            "x": 256.0,
+            "x": 0.0,
             "y": 0.0,
             "width": 256.0,
             "height": 128.0,
@@ -136,14 +121,14 @@
             }
           },
           {
-            "title": "Shift Time",
+            "title": "Shift Time Left",
             "x": 0.0,
             "y": 480.0,
             "width": 416.0,
             "height": 224.0,
             "type": "Match Time",
             "properties": {
-              "topic": "/SmartDashboard/Shift Time",
+              "topic": "/Robot/Shift/Time left",
               "period": 0.06,
               "data_type": "double",
               "time_display_mode": "Minutes and Seconds",
@@ -159,7 +144,7 @@
             "height": 224.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/Hub Active",
+              "topic": "/Robot/Shift/Hub Active",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -189,7 +174,7 @@
             "height": 128.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/SmartDashboard/Shift",
+              "topic": "/Robot/Shift/Current",
               "period": 0.06,
               "data_type": "string"
             }
@@ -202,9 +187,8 @@
             "height": 128.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/SmartDashboard/Won Auto",
-              "period": 0.06,
-              "data_type": "string"
+              "topic": "/Robot/Shift/Won Auto",
+              "period": 0.06
             }
           },
           {
@@ -248,7 +232,7 @@
           },
           {
             "title": "Treat as loaded early",
-            "x": 672.0,
+            "x": 256.0,
             "y": 0.0,
             "width": 224.0,
             "height": 128.0,
@@ -268,43 +252,15 @@
         "layouts": [],
         "containers": [
           {
-            "title": "Auto Chooser",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 576.0,
-            "height": 128.0,
-            "type": "ComboBox Chooser",
-            "properties": {
-              "topic": "/SmartDashboard/auto/Auto Chooser",
-              "period": 0.06,
-              "sort_options": false
-            }
-          },
-          {
-            "title": "Startup delay",
-            "x": 0.0,
-            "y": 128.0,
-            "width": 192.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/auto/Startup delay",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
             "title": "Swerve Module Alignment",
-            "x": 192.0,
+            "x": 0.0,
             "y": 128.0,
             "width": 224.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/Swerve/Modules Aligned",
+              "topic": "/Robot/Swerve/Modules Aligned",
               "period": 0.06,
-              "data_type": "boolean",
               "true_color": 4283215696,
               "false_color": 4294198070,
               "true_icon": "Checkmark",
@@ -313,13 +269,13 @@
           },
           {
             "title": "Starting Pose Error",
-            "x": 416.0,
+            "x": 224.0,
             "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
-              "topic": "/SmartDashboard/autoSetup/Starting Pose Error",
+              "topic": "/Robot/Autos/Starting Pose Error",
               "period": 0.06,
               "data_type": "string",
               "show_submit_button": false
@@ -327,13 +283,13 @@
           },
           {
             "title": "Starting Pose OK",
-            "x": 672.0,
+            "x": 480.0,
             "y": 128.0,
             "width": 224.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/autoSetup/Starting Pose OK",
+              "topic": "/Robot/Autos/Starting Pose OK",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -344,13 +300,13 @@
           },
           {
             "title": "New vision result",
-            "x": 896.0,
+            "x": 704.0,
             "y": 128.0,
             "width": 224.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/Vision/Have Pose",
+              "topic": "/Robot/Vision/Have Pose",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -367,7 +323,7 @@
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/autoSetup/Red Alliance?",
+              "topic": "/Robot/Autos/Red Alliance?",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4290522427,
@@ -384,10 +340,10 @@
             "height": 128.0,
             "type": "Command",
             "properties": {
-              "topic": "/SmartDashboard/auto/Assume Starting Pose",
+              "topic": "/SmartDashboard/Autos/Assume Starting Pose",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -398,9 +354,8 @@
             "height": 128.0,
             "type": "Toggle Button",
             "properties": {
-              "topic": "/SmartDashboard/TunableOptions/Mirror Auto to Left",
-              "period": 0.06,
-              "data_type": "boolean"
+              "topic": "/SmarDashboard/TunableOptions/Mirror Auto to Left",
+              "period": 0.06
             }
           },
           {
@@ -414,7 +369,7 @@
               "topic": "/SmartDashboard/Feeder/Deploy Intake",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -517,6 +472,19 @@
             "type": "ComboBox Chooser",
             "properties": {
               "topic": "/SmartDashboard/auto/AutoBuilderOption/Sweep Type",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Auto Chooser",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 576.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Autos/Auto Chooser",
               "period": 0.06,
               "sort_options": false
             }
@@ -789,7 +757,7 @@
               "topic": "/SmartDashboard/Zero Gyro (Logged)",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -803,7 +771,7 @@
               "topic": "/SmartDashboard/autoSetup/Set Swerve Aligned (Logged)",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -817,7 +785,7 @@
               "topic": "/SmartDashboard/autoSetup/Set Swerve Coast (Logged)",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -831,7 +799,7 @@
               "topic": "/SmartDashboard/autoSetup/Set Swerve Brake (Logged)",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           }
         ]
@@ -850,7 +818,7 @@
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/Shooter/At Speed",
+              "topic": "/Robot/Shooter/At Speed",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -870,7 +838,7 @@
               "topic": "/SmartDashboard/Stop",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -912,7 +880,7 @@
               "topic": "/SmartDashboard/Set RPM",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -926,7 +894,7 @@
               "topic": "/SmartDashboard/Set Voltage",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -940,7 +908,7 @@
               "topic": "/SmartDashboard/Stop",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -980,7 +948,7 @@
               "topic": "/SmartDashboard/Disable Signal Logging (Logged)",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -994,7 +962,7 @@
               "topic": "/SmartDashboard/Enable Signal Logging (Logged)",
               "period": 0.06,
               "show_type": true,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           }
         ]
@@ -1005,42 +973,6 @@
       "grid_layout": {
         "layouts": [],
         "containers": [
-          {
-            "title": "Right Side",
-            "x": 1440.0,
-            "y": 0.0,
-            "width": 480.0,
-            "height": 416.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/photonvision2_Port_1182_Output_MJPEG_Server",
-              "period": 0.06,
-              "rotation_turns": 0,
-              "fps": 3,
-              "resolution": [
-                160.0,
-                120.0
-              ]
-            }
-          },
-          {
-            "title": "Front Right",
-            "x": 960.0,
-            "y": 0.0,
-            "width": 480.0,
-            "height": 416.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/photonvision2_Port_1184_Output_MJPEG_Server",
-              "period": 0.06,
-              "rotation_turns": 0,
-              "fps": 3,
-              "resolution": [
-                160.0,
-                120.0
-              ]
-            }
-          },
           {
             "title": "Left Side",
             "x": 0.0,
@@ -1127,6 +1059,42 @@
               "topic": "/SmartDashboard/Vision/SIDERIGHT Enabled",
               "period": 0.06,
               "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Front Right",
+            "x": 960.0,
+            "y": 0.0,
+            "width": 480.0,
+            "height": 416.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision3_Port_1182_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "fps": 3,
+              "resolution": [
+                160.0,
+                120.0
+              ]
+            }
+          },
+          {
+            "title": "Right Side",
+            "x": 1440.0,
+            "y": 0.0,
+            "width": 480.0,
+            "height": 416.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/photonvision3_Port_1184_Output_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "fps": 3,
+              "resolution": [
+                160.0,
+                120.0
+              ]
             }
           }
         ]

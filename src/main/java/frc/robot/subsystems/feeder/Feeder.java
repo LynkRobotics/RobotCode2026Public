@@ -46,8 +46,6 @@ public class Feeder extends LynkSubsystem<Feeder> {
     }
 
     public void feed() {
-        // floorMotor.set(FeederConstants.floorSpeed);
-        // feederMotor.set(FeederConstants.feederSpeed);
         feederReverseTimer.stop();
         feederMotor.setControl(new VoltageOut(12.0).withEnableFOC(true));
         floorMotor.setControl(new VoltageOut(12.0).withEnableFOC(true));

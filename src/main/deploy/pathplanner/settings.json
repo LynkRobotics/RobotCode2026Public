@@ -3,6 +3,7 @@
   "robotLength": 0.815,
   "holonomicMode": true,
   "pathFolders": [
+    "Dead",
     "Return",
     "SOTM Calibration",
     "Start",
@@ -10,9 +11,9 @@
     "Testing"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 3.6,
-  "defaultMaxAccel": 4.0,
-  "defaultMaxAngVel": 540.0,
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 8.0,
+  "defaultMaxAngVel": 360.0,
   "defaultMaxAngAccel": 1080.0,
   "defaultNominalVoltage": 12.0,
   "robotMass": 69.0,

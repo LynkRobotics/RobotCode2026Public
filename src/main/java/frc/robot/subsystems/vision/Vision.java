@@ -64,7 +64,6 @@ public class Vision extends SubsystemBase {
         for (Camera cameraType : VisionConstants.camerasAvailable) {
             cameras.put(cameraType, new PhotonCamera(cameraType.name));
             photonEstimator.put(cameraType, new PhotonPoseEstimator(Constants.fieldLayout, cameraType.robotToCamera));
-            // Robot.fieldSelector.addOption(cameraType.toString(), cameraType.toString());
             SmartDashboard.putBoolean("Vision/" + cameraType + " Enabled", true);
             setCameraMode(CameraMode.DEFAULT);
         }
@@ -72,8 +71,7 @@ public class Vision extends SubsystemBase {
 
     public static void setCameraMode(CameraMode cameraMode) {
         Vision.cameraMode = cameraMode;
-        DogLog.log("Vision/Camera Mode", cameraMode);
-        SmartDashboard.putString("Vision/Camera Mode", cameraMode.toString());
+        DogLog.log("Vision/Camera Mode", cameraMode.toString());
     }
 
     public static Command SwitchToDefaultVision() {
@@ -234,16 +232,13 @@ public class Vision extends SubsystemBase {
         Rotation2d heading = null;
         double timestamp = 0;
         boolean havePose = false;
-        // boolean selectedResult = false;
         double startTimestamp;
 
-        // if (Constants.profileTime) {
-            startTimestamp = Timer.getFPGATimestamp();
-        // }
+        startTimestamp = Timer.getFPGATimestamp();
 
         if (headingProvider != null) {
             heading = headingProvider.get();
-            timestamp = Timer.getFPGATimestamp();
+            timestamp = startTimestamp;
         }
 
         List<Camera> camerasEnabled = new LinkedList<Camera>();
@@ -253,12 +248,6 @@ public class Vision extends SubsystemBase {
             }
         }
         DogLog.log("Vision/Vision Override", visionOverride.toString());
-
-        // double partialTimestamp;
-        // if (Constants.profileTime) {
-        //     partialTimestamp = Timer.getFPGATimestamp();
-        //     DogLog.log("Vision/Partial Execution Time (ms)", (partialTimestamp - startTimestamp) * 1000.0);
-        // }
 
         for (var cameraType : camerasEnabled) {
             if (heading != null) {
@@ -271,8 +260,6 @@ public class Vision extends SubsystemBase {
             for (PoseResult poseResult : results) {
                 DogLog.log(logPrefix + "Timestamp", poseResult.timestamp);
                 DogLog.log(logPrefix + "Pose", poseResult.pose);
-                // SignalLogger.writeStruct(logPrefix + "Pose3d" , Pose3d.struct, poseResult.pose, startTimestamp - poseResult.timestamp);
-                // SignalLogger.writeStruct(logPrefix + "Pose2d" , Pose2d.struct, poseResult.pose.toPose2d(), startTimestamp - poseResult.timestamp);
                 DogLog.log(logPrefix + "Ambiguity", poseResult.ambiguity);
                 DogLog.log(logPrefix + "Distance", poseResult.averageTagDistance);
                 DogLog.log(logPrefix + "Tag Poses", (Pose3d[])poseResult.fiducialIDs.stream().map(tag -> Constants.fieldLayout.getTagPose(tag).get()).toArray(size -> new Pose3d[size]));
@@ -295,18 +282,13 @@ public class Vision extends SubsystemBase {
                             // TODO Do we care which camera?
                             linearStdDev = 0.0001;
                             visionOverride = VisionOverride.NONE;
-                            Pose.instance.setPose(pose); // Just adding the measurement isn't enough
+                            poseEstimator.resetTranslation(pose.getTranslation());
                         }
                         poseEstimator.addVisionMeasurement(pose, poseResult.timestamp, VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
                         DogLog.log("Vision/Status", "Adding vision measurement from " + cameraType + " at " + poseResult.timestamp + " with stddev " + String.format("%1.4f", linearStdDev));
                         if (poseResult.timestamp > lastTimestamp) {
                             lastTimestamp = poseResult.timestamp;
                         }
-
-                        // if (Robot.fieldSelector.getSelected() == cameraType.toString()) {
-                            // Robot.field.getObject("Vision").setPose(pose);
-                        //     selectedResult = true;
-                        // }
 
                         lastPose = pose;
                         havePose = true;
@@ -316,16 +298,13 @@ public class Vision extends SubsystemBase {
         }
 
         if (dashboardCounter++ >= VisionConstants.dashboardInterval) {
-            Robot.field.getObject("Vision").setPose(lastPose);
+            // Robot.field.getObject("Vision").setPose(lastPose);
             dashboardCounter = 0;
         }
         DogLog.log("Vision/Time Since Result", timeSinceVision());
-        SmartDashboard.putBoolean("Vision/Have Pose", havePose);
-        // SmartDashboard.putBoolean("Vision/Selected Result", selectedResult);
+        DogLog.log("Vision/Have Pose", havePose);
 
-        if (Constants.profileTime) {
-            double stopTimestamp = Timer.getFPGATimestamp();
-            DogLog.log("Vision/Execution Time (ms)", (stopTimestamp - startTimestamp) * 1000.0);
-        }
+        double stopTimestamp = Timer.getFPGATimestamp();
+        DogLog.log("Vision/Execution Time (ms)", (stopTimestamp - startTimestamp) * 1000.0);
     }
 }

@@ -41,6 +41,19 @@ public class CANdleGroup {
         }
     }
 
+    /**
+     * Pass a {@link ControlRequest} through to every CANdle without logging.
+     *
+     * <p>Intended for high-frequency callers (e.g. software animations) where a per-call
+     * log message would flood the log. The caller is responsible for choosing an
+     * appropriate UpdateFreqHz on the request.
+     */
+    public void setControl(ControlRequest request) {
+        for (CANdle candle : candles) {
+            candle.setControl(request);
+        }
+    }
+
     public void clearAnimation() {
         DogLog.log("LED/Status", "Clearing animation");
         for (CANdle candle : candles) {

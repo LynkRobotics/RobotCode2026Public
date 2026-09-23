@@ -4,10 +4,11 @@ import java.util.Optional;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;
 
+import dev.doglog.DogLog;
+
 import static frc.robot.Options.optHubActive;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // Encapsulate logic relating to 2026 REBUILT Shifts
 public enum Shift {
@@ -70,7 +71,7 @@ public enum Shift {
                     default -> Optional.empty(); // Invalid data
                 };
                 if (wonAuto.isPresent()) {
-                    SmartDashboard.putString("Won Auto", wonAuto.get() ? "W" : "L");
+                    DogLog.log("Shift/Won Auto", wonAuto.get() ? "W" : "L");
                 }
             }
         }
@@ -113,8 +114,9 @@ public enum Shift {
 
     public static void updateDashboard(double matchTime) {
         Shift shift = Shift.lookup(matchTime);
-        SmartDashboard.putString("Shift", shift.toString());
-        SmartDashboard.putNumber("Shift Time", shift.timeLeft(matchTime));
-        SmartDashboard.putBoolean("Hub Active", shift.isActive());
+
+        DogLog.log("Shift/Current", shift.toString());
+        DogLog.log("Shift/Time left", shift.timeLeft(matchTime));
+        DogLog.log("Shift/Hub Active", shift.isActive());
     }
 }

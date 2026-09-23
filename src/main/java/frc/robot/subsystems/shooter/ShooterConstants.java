@@ -42,38 +42,50 @@ public class ShooterConstants {
     @SuppressWarnings("unchecked")
     private static final CalibrationTable.CalibrationValue<ShooterSetpoint>[] shootingValues =
         (CalibrationTable.CalibrationValue<ShooterSetpoint>[]) new CalibrationTable.CalibrationValue[] {
-			new CalibrationTable.CalibrationValue<>(2.11, new ShooterSetpoint(2395, 0)),
-			new CalibrationTable.CalibrationValue<>(2.99, new ShooterSetpoint(2635, 0)),
-			new CalibrationTable.CalibrationValue<>(3.60, new ShooterSetpoint(2770, 0)),
-			new CalibrationTable.CalibrationValue<>(4.00, new ShooterSetpoint(2875, 0)),
-			new CalibrationTable.CalibrationValue<>(4.49, new ShooterSetpoint(3060, 0)),
-			new CalibrationTable.CalibrationValue<>(5.00, new ShooterSetpoint(3220, 0)),
-            new CalibrationTable.CalibrationValue<>(Double.POSITIVE_INFINITY, new ShooterSetpoint(3600, 0)),
+			new CalibrationTable.CalibrationValue<>(1.62, new ShooterSetpoint(2250, 0)),
+			new CalibrationTable.CalibrationValue<>(2.01, new ShooterSetpoint(2300, 0)),
+			new CalibrationTable.CalibrationValue<>(2.50, new ShooterSetpoint(2450, 0)),
+			new CalibrationTable.CalibrationValue<>(3.00, new ShooterSetpoint(2660, 0)),
+			new CalibrationTable.CalibrationValue<>(3.50, new ShooterSetpoint(2795, 0)),
+			new CalibrationTable.CalibrationValue<>(4.00, new ShooterSetpoint(2935, 0)),
+			new CalibrationTable.CalibrationValue<>(4.50, new ShooterSetpoint(3100, 0)),
+			new CalibrationTable.CalibrationValue<>(5.00, new ShooterSetpoint(3315, 0)),
+			new CalibrationTable.CalibrationValue<>(5.50, new ShooterSetpoint(3550, 0)),
+            new CalibrationTable.CalibrationValue<>(Double.POSITIVE_INFINITY, new ShooterSetpoint(3550, 0)),
         };
     public static final CalibrationTable<ShooterSetpoint> shootingTable = new CalibrationTable<>(shootingValues);
 
     @SuppressWarnings("unchecked")
     private static final CalibrationTable.CalibrationValue<ShooterSetpoint>[] passingValues =
         (CalibrationTable.CalibrationValue<ShooterSetpoint>[]) new CalibrationTable.CalibrationValue[] {
-            new CalibrationTable.CalibrationValue<>(0.00, new ShooterSetpoint(1500, 0)),
-            new CalibrationTable.CalibrationValue<>(1.00, new ShooterSetpoint(1500, 0)),
-            new CalibrationTable.CalibrationValue<>(2.10, new ShooterSetpoint(2000, 0)),
-            new CalibrationTable.CalibrationValue<>(4.13, new ShooterSetpoint(2800, 0)),
-            new CalibrationTable.CalibrationValue<>(6.17, new ShooterSetpoint(3450, 0)),
-            new CalibrationTable.CalibrationValue<>(7.70, new ShooterSetpoint(4475, 0)),
-            new CalibrationTable.CalibrationValue<>(9.60, new ShooterSetpoint(5400, 0)),
-            new CalibrationTable.CalibrationValue<>(Double.POSITIVE_INFINITY, new ShooterSetpoint(6000, 0)),
+            new CalibrationTable.CalibrationValue<>(0.00, new ShooterSetpoint(2000, 0)),
+            new CalibrationTable.CalibrationValue<>(2.44, new ShooterSetpoint(2000, 0)),
+            new CalibrationTable.CalibrationValue<>(3.60, new ShooterSetpoint(2400, 0)),
+            new CalibrationTable.CalibrationValue<>(4.50, new ShooterSetpoint(2750, 0)),
+            new CalibrationTable.CalibrationValue<>(5.50, new ShooterSetpoint(3400, 0)),
+            new CalibrationTable.CalibrationValue<>(6.50, new ShooterSetpoint(3700, 0)),
+            new CalibrationTable.CalibrationValue<>(7.50, new ShooterSetpoint(4150, 0)),
+            new CalibrationTable.CalibrationValue<>(8.50, new ShooterSetpoint(5000, 0)),
+            new CalibrationTable.CalibrationValue<>(9.00, new ShooterSetpoint(5500, 0)),
+            new CalibrationTable.CalibrationValue<>(Double.POSITIVE_INFINITY, new ShooterSetpoint(5500, 0)),
         };
     public static final CalibrationTable<ShooterSetpoint> passingTable = new CalibrationTable<>(passingValues);
 
     public static final InterpolatingDoubleTreeMap distanceToToF = new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap distanceToPassingToF = new InterpolatingDoubleTreeMap();
 
 	static {
 		distanceToToF.put(1.681, 0.884);
 		distanceToToF.put(2.485, (18.245-10.341)/8.0);
 		distanceToToF.put(4.00, (17.879-8.171)/8.0);
 		distanceToToF.put(5.20, (22.215-10.573)/8.0);
-		distanceToToF.put(Double.POSITIVE_INFINITY, 3.0);
+		distanceToToF.put(Double.POSITIVE_INFINITY, 2.0);
+
+		distanceToPassingToF.put(4.95, ((22.419-10.541)/8.0 + (26.187-14.111)/8.0)/2.0);
+		distanceToPassingToF.put(6.85, ((28.490-14.146)/8.0 + (33.829-19.382)/8.0)/2.0);
+		distanceToPassingToF.put(8.49, ((21.951-6.839)/8.0 + (27.324-12.576)/8.0)/2.0);
+		distanceToPassingToF.put(9.95, (29.525-12.610)/8.0);
+		distanceToPassingToF.put(Double.POSITIVE_INFINITY, 2.2);
 	}
 
 	public static MotorConfig getFlywheelMotorConfig() {

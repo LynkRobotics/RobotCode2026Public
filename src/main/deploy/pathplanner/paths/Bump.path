@@ -11,7 +11,7 @@
         "x": 5.0,
         "y": 2.35
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Bump start"
     },
     {
@@ -27,7 +27,7 @@
         "x": 6.670229967647136,
         "y": 3.149889869550093
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Bump NZ"
     },
     {
@@ -43,7 +43,7 @@
         "x": 6.852339156382714,
         "y": 4.186829376469193
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -56,7 +56,7 @@
         "y": 4.04
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Middle far"
     }
   ],
@@ -99,7 +99,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Before Bump",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.3,
     "maxAcceleration": 9.0,

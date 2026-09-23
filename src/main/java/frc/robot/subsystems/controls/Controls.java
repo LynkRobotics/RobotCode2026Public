@@ -31,8 +31,6 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.superstructure.Superstructure;
 import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.pidswerve.PIDSwerve;
-import frc.robot.commands.pidswerve.PIDSwerveConstants.PIDSpeed;
 
 public class Controls extends SubsystemBase {
     public static final Controls instance = new Controls();
@@ -46,9 +44,11 @@ public class Controls extends SubsystemBase {
     private final Supplier<Double> rotation = driver::getRightX;
 
     public Controls() {
-        SmartDashboard.putNumber("TeleOp Speed Governor", 1.0);
+        SmartDashboard.putNumber("TeleOp Speed Governor", Constants.teleopDriveSpeedLimit);
         // SmartDashboard.putNumber("TeleOp Translation Expo", 2.0);
         // SmartDashboard.putNumber("TeleOp Rotation Expo", 2.0);
+
+        SmartDashboard.putNumber("Shooter RPM Adjustment", Constants.shooterRPMAdjustmentDefault);
 
         // TODO Restore
         // Pose pose = Pose.instance;
@@ -124,10 +124,11 @@ public class Controls extends SubsystemBase {
                 driver.leftBumper().whileTrue(Superstructure.instance.Intake());
                 driver.leftTrigger().whileTrue(Superstructure.instance.Pass());
                 driver.a().onTrue(LoggedCommands.runOnce("Set Pass CORNER", () -> Aiming.setPassTarget(PassTarget.CORNER)));
-                // driver.x().onTrue(LoggedCommands.runOnce("Set Pass MIDDLE", () -> Aiming.setPassTarget(PassTarget.MIDDLE)));
-                Pose2d testPose = new Pose2d(4.62, 1.8, Rotation2d.kCCW_90deg);
-                driver.x().whileTrue(new PIDSwerve(Swerve.instance, Pose.instance, testPose, true, false, PIDSpeed.TURBO, 0.3).andThen(Swerve.instance.Stop()));
-                driver.x().onFalse(Swerve.instance.Stop());
+                driver.x().onTrue(LoggedCommands.runOnce("Set Pass MIDDLE", () -> Aiming.setPassTarget(PassTarget.MIDDLE)));
+                // Pose2d testPose = new Pose2d(4.62, 1.8, Rotation2d.kCCW_90deg);
+                // driver.x().whileTrue(new PIDSwerve(Swerve.instance, Pose.instance, testPose, true, false, PIDSpeed.TURBO, 0.3).andThen(Swerve.instance.Stop()));
+                // driver.x().whileTrue(Autos.instance.SOTMTest());
+                // driver.x().onFalse(Swerve.instance.Stop());
                 driver.b().onTrue(LoggedCommands.runOnce("Set Pass TRENCH", () -> Aiming.setPassTarget(PassTarget.TRENCH)));
                 break;
         }
@@ -174,6 +175,15 @@ public class Controls extends SubsystemBase {
 
             // DogLog.log("Debug/Target pose", Pose.flipIfRed(new Pose2d(2.0, 1.0, Rotation2d.kZero)));
             // DogLog.log("Debug/Target pose", Pose.flipIfRed(new Pose2d(4.20, 0.450, Rotation2d.kCCW_90deg)));
+        }
+    }
+
+    public void teleopInit() {
+        // Check buttons that might have been pressed before TeleOp started, and start any commands that should be running
+        if (ControlsConstants.controlMode == ControlsConstants.ControlMode.DEFAULT) {
+            if (driver.leftBumper().getAsBoolean()) {
+                CommandScheduler.getInstance().schedule(Superstructure.instance.Intake());
+            }
         }
     }
 

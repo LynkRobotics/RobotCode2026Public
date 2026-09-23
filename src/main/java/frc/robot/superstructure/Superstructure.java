@@ -112,13 +112,23 @@ public class Superstructure extends SubsystemBase {
                 ),
                 LoggedCommands.waitUntil("Wait for shooter ready", () -> shooter.getMode() == ShooterMode.SHOOTING),
                 LoggedCommands.waitUntil("Wait for alignment", () -> !optWaitForAim.get() || Aiming.isVirtualHubAligned()),
-                shooter.AdjustForLoad(),
-                Commands.parallel(
-                    Commands.either(
-                        Swerve.instance.HoldX().asProxy(),
-                        Commands.idle(),
-                        optHoldX),
-                    feeder.Feed())
+                Commands.either(
+                    Commands.none(),
+                    shooter.AdjustForLoad(),
+                    optLoadEarly
+                ),
+                LoggedCommands.repeatingSequence("Shooting sequence",
+                    LoggedCommands.race("Feed while aligned",
+                        LoggedCommands.waitUntil("Wait for unalignment", Aiming::isVirtualHubUnaligned),
+                        Commands.parallel(
+                            // TODO Require even better alignment for Hold X?
+                            Commands.either(
+                                Swerve.instance.HoldX().asProxy(),
+                                Commands.idle(),
+                                optHoldX),
+                            feeder.Feed())),
+                    LoggedCommands.waitUntil("Wait for (re)alignment", () -> !optWaitForAim.get() || Aiming.isVirtualHubAligned())
+                )
             )
         );
     } 

@@ -12,9 +12,6 @@ public class FeederConstants {
     public static final double feederGearing = (18.0 / 18.0);
     public static final double floorGearing = (36.0 / 18.0);
 
-	public static final double feederSpeed = 1.0;
-	public static final double floorSpeed = 1.0;
-
 	public static final double autoReverseTime = 1.0; // Time in seconds to run the feeder in reverse when auto-reversing
 
 	public static final Voltage intakeDeployVoltage = Units.Volts.of(6.0); // Voltage to apply to the floor motors when deploying the intake

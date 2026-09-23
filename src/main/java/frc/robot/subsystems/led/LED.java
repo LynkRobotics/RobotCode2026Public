@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.CustomFireAnimation;
 import frc.lib.util.LoggedCommands;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -109,6 +110,7 @@ public class LED extends SubsystemBase {
 
     private static class LEDConfig {
         ControlRequest animation = null;
+        CustomFireAnimation customAnimation = null;
         Color color = null;
         Color bgColor = null;
         boolean blink = false;
@@ -143,6 +145,10 @@ public class LED extends SubsystemBase {
         LEDConfig(ControlRequest animation) {
             this.animation = animation;
         }
+
+        LEDConfig(CustomFireAnimation customAnimation) {
+            this.customAnimation = customAnimation;
+        }
     }
 
     public enum LEDState {
@@ -176,7 +182,6 @@ public class LED extends SubsystemBase {
         setColor(Color.lynk, 0, LEDConstants.startIdx);
 
         if (Constants.fullDashboard) {
-            colorChooser = new SendableChooser<Color>();
             SmartDashboard.putNumber("LED/start", 0);
             SmartDashboard.putNumber("LED/count", 100);
             for (Color color : Color.values()) {
@@ -196,8 +201,10 @@ public class LED extends SubsystemBase {
         // Set color on the LEDs
         setColor(Color.lynk, LEDConstants.startIdx, LEDConstants.numLEDs);
 
-        // SmartDashboard.putString("LED Mode Override", "");
-        // SmartDashboard.putNumber("LED Pct Override", -1.0);
+        if (Constants.fullDashboard) {
+            SmartDashboard.putString("LED Mode Override", "");
+            SmartDashboard.putNumber("LED Pct Override", -1.0);
+        }
     }
 
     private static void setColor(Color color, int startIdx, int count) {
@@ -290,14 +297,16 @@ public class LED extends SubsystemBase {
             }
         }
 
-        // String override = SmartDashboard.getString("LED Mode Override", "");
-        // if (override != null && override.length() > 0) {
-        //     state = LEDState.valueOf(override);
-        // }
-        // double overridePct = SmartDashboard.getNumber("LED Pct Override", -1.0);
-        // if (overridePct >= 0.0) {
-        //     pctLeft = overridePct;
-        // }
+        if (Constants.fullDashboard) {
+            String override = SmartDashboard.getString("LED Mode Override", "");
+            if (override != null && override.length() > 0) {
+                state = LEDState.valueOf(override);
+            }
+            double overridePct = SmartDashboard.getNumber("LED Pct Override", -1.0);
+            if (overridePct >= 0.0) {
+                pctLeft = overridePct;
+            }
+        }
 
         // If changing to a blinking state, restart the blink
         boolean blinkToggle = false;
@@ -317,8 +326,21 @@ public class LED extends SubsystemBase {
         }
 
         // Change the LEDs if the state has changed
-        if (state != lastState || pctLeft != 1.0 || blinkToggle) {
-            if (lastState == null || lastState.config.animation != null) {
+        if (state.config.customAnimation != null) {
+            // Software animation: re-evaluate the desired palette every cycle so that
+            // alliance changes (e.g. after FMS connects) take effect immediately.
+            state.config.customAnimation.withPalette(currentFirePalette());
+            if (state != lastState) {
+                if (lastState != null && lastState.config.animation != null) {
+                    leds.clearAnimation();
+                }
+                state.config.customAnimation.reset();
+            }
+            // update() throttles to the animation's frame rate internally.
+            state.config.customAnimation.update(leds);
+        } else if (state != lastState || pctLeft != 1.0 || blinkToggle) {
+            if (lastState == null || lastState.config.animation != null
+                    || lastState.config.customAnimation != null) {
                 leds.clearAnimation();
             }
             if (state.config.animation != null) {
@@ -343,5 +365,18 @@ public class LED extends SubsystemBase {
 
         DogLog.log("LED/State", state.toString());
         lastState = state;
-    }    
+    }
+
+    /**
+     * Select the fire palette based on the current alliance. Defaults to RED when the
+     * alliance is unknown (e.g. before FMS/DS reports it) so the robot looks the same
+     * as the prior hardware FireAnimation in that case.
+     */
+    private static CustomFireAnimation.Palette currentFirePalette() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
+            return CustomFireAnimation.Palette.BLUE;
+        }
+        return CustomFireAnimation.Palette.RED;
+    }
 }

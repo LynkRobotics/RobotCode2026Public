@@ -45,7 +45,7 @@ public class AimOnly extends LoggedCommand {
         s_Swerve.drive(
             new Translation2d(0.0, 0.0),
             rotationVal * SwerveConstants.maxAngularVelocity,
-            false
+            true
         );
     }
 }
